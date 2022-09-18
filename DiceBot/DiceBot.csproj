@@ -1,0 +1,601 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7E0D59CC-D9A0-4EB4-96BF-11C0DDD8A8B5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DiceBot</RootNamespace>
+    <AssemblyName>DiceBot</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>false</MapFileExtensions>
+    <ProductName>Dicebot</ProductName>
+    <SuiteName>Dicebot</SuiteName>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>4.1.15.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <ExcludeDeploymentUrl>true</ExcludeDeploymentUrl>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>E10D9A30C7D396048C0CA499F0773A605A131811</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Dicebot_temp.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>DiceBot.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FastColoredTextBox, Version=2.16.24.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
+      <HintPath>..\packages\FCTB.2.16.24\lib\FastColoredTextBox.dll</HintPath>
+    </Reference>
+    <Reference Include="GraphQL.Client, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GraphQL.Client.1.0.3\lib\netstandard1.1\GraphQL.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="GraphQL.Common, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GraphQL.Common.1.0.3\lib\netstandard1.0\GraphQL.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.3.0\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Noesis.Javascript">
+      <HintPath>..\packages\Noesis.Javascript.0.7.1.0\lib\net40\x86\Noesis.Javascript.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RestSharp, Version=106.15.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.15.0\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpLua">
+      <HintPath>..\packages\SharpLua.2.1.1.1\lib\net40\SharpLua.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.ClientEngine, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.10.0\lib\net45\SuperSocket.ClientEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net451\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TwoStepsAuthenticator, Version=1.3.1.0, Culture=neutral, PublicKeyToken=358e44b41ae80033, processorArchitecture=MSIL">
+      <HintPath>..\packages\TwoStepsAuthenticator.1.3.1\lib\net45\TwoStepsAuthenticator.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net, Version=0.15.2.11, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocket4Net.0.15.2\lib\net45\WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BetHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BetHistory.Designer.cs">
+      <DependentUpon>BetHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\AppHelpers.cs" />
+    <Compile Include="Core\GameEngine.cs" />
+    <Compile Include="Core\IDiceSite.cs" />
+    <Compile Include="Core\Schema\Bet.cs" />
+    <Compile Include="Core\Schema\cBet.cs" />
+    <Compile Include="Core\DiceSite.cs" />
+    <Compile Include="Core\Random.cs" />
+    <Compile Include="Sites\BetKing.cs" />
+    <Compile Include="BitdiceConfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BitdiceConfirm.Designer.cs">
+      <DependentUpon>BitdiceConfirm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sites\bitdice\bitdice.cs" />
+    <Compile Include="Sites\BitExo.cs" />
+    <Compile Include="Sites\Bitvest.cs" />
+    <Compile Include="Sites\DuckDice\Schema.cs" />
+    <Compile Include="Sites\DuckDice\DuckDice.cs" />
+    <Compile Include="Sites\EtherCrash.cs" />
+    <Compile Include="Sites\Freebitcoin.cs" />
+    <Compile Include="Sites\Kingdice.cs" />
+    <Compile Include="LoginFailedForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoginFailedForm.Designer.cs">
+      <DependentUpon>LoginFailedForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sites\NitroDice.cs" />
+    <Compile Include="Sites\NitrogenSports.cs" />
+    <Compile Include="Sites\stake\Stake.cs" />
+    <Compile Include="Sites\primedice\PrimeDice.cs" />
+    <Compile Include="Sites\SatoshiDice.cs" />
+    <Compile Include="SeedInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SeedInput.Designer.cs">
+      <DependentUpon>SeedInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sites\stake\StakeOld.cs" />
+    <Compile Include="StatsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatsForm.Designer.cs">
+      <DependentUpon>StatsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sites\bitsler\Bitlser.cs" />
+    <Compile Include="cDiceBot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="cDiceBot.Designer.cs">
+      <DependentUpon>cDiceBot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Cloudflare.cs" />
+    <Compile Include="Sites\cryptogames.cs" />
+    <Compile Include="Custom Chart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Custom Chart.Designer.cs">
+      <DependentUpon>Custom Chart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Donate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Donate.Designer.cs">
+      <DependentUpon>Donate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DonateBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DonateBox.Designer.cs">
+      <DependentUpon>DonateBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fChat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fChat.Designer.cs">
+      <DependentUpon>fChat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfirmPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfirmPassword.Designer.cs">
+      <DependentUpon>ConfirmPassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sites\dice999.cs" />
+    <Compile Include="Core\Email.cs" />
+    <Compile Include="Sites\FortuneJack.cs" />
+    <Compile Include="Graph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Graph.Designer.cs">
+      <DependentUpon>Graph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\imgur.cs" />
+    <Compile Include="Sites\JD.cs" />
+    <Compile Include="Core\json.cs" />
+    <Compile Include="Mersenne.cs" />
+    <Compile Include="Core\Messagehelpr.cs" />
+    <Compile Include="MiniBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MiniBrowser.Designer.cs">
+      <DependentUpon>MiniBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proxy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Proxy.Designer.cs">
+      <DependentUpon>Proxy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sites\SafeDice.cs" />
+    <Compile Include="Core\SavedItem.cs" />
+    <Compile Include="Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SimpleSwap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SimpleSwap.Designer.cs">
+      <DependentUpon>SimpleSwap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Simulate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Simulate.Designer.cs">
+      <DependentUpon>Simulate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Simulation.cs" />
+    <Compile Include="Core\sqlite_helper.cs" />
+    <Compile Include="Startup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Startup.Designer.cs">
+      <DependentUpon>Startup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\StatsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\StatsControl.Designer.cs">
+      <DependentUpon>StatsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StreakTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StreakTable.Designer.cs">
+      <DependentUpon>StreakTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\textValues_en.cs" />
+    <Compile Include="UserInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInput.Designer.cs">
+      <DependentUpon>UserInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Verify.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Verify.Designer.cs">
+      <DependentUpon>Verify.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Sites\WinDice.cs" />
+    <Compile Include="Sites\WolfBet.cs" />
+    <Compile Include="Sites\YoloDice.cs" />
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BetHistory.resx">
+      <DependentUpon>BetHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BitdiceConfirm.resx">
+      <DependentUpon>BitdiceConfirm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cDiceBot.resx">
+      <DependentUpon>cDiceBot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Custom Chart.resx">
+      <DependentUpon>Custom Chart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Donate.resx">
+      <DependentUpon>Donate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DonateBox.resx">
+      <DependentUpon>DonateBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fChat.resx">
+      <DependentUpon>fChat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfirmPassword.resx">
+      <DependentUpon>ConfirmPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Graph.resx">
+      <DependentUpon>Graph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LoginFailedForm.resx">
+      <DependentUpon>LoginFailedForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MiniBrowser.resx">
+      <DependentUpon>MiniBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Proxy.resx">
+      <DependentUpon>Proxy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SeedInput.resx">
+      <DependentUpon>SeedInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SimpleSwap.resx">
+      <DependentUpon>SimpleSwap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Simulate.resx">
+      <DependentUpon>Simulate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Startup.resx">
+      <DependentUpon>Startup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\StatsControl.resx">
+      <DependentUpon>StatsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StatsForm.resx">
+      <DependentUpon>StatsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StreakTable.resx">
+      <DependentUpon>StreakTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInput.resx">
+      <DependentUpon>UserInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Verify.resx">
+      <DependentUpon>Verify.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="dicebot_2022.pfx" />
+    <None Include="Dicebot_temp.pfx" />
+    <None Include="DiceBot_TemporaryKey.pfx" />
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\Bet.datasource" />
+    <None Include="Properties\DataSources\cBet.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitignore" />
+    <Content Include="logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\GamblingTools\GamblingTools.sdk\GamblingTools.Sdk.csproj">
+      <Project>{02204352-cc6a-4be0-8aba-d594f33c5b1f}</Project>
+      <Name>GamblingTools.Sdk</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.109.2\build\net451\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <!--
+
+  <FileUpdate File="$(RootDir)/GlobalAssemblyInfo.cs"
+            Regex='AssemblyFileVersion[(]"[^"]+"[)]'
+            ReplacementText='AssemblyFileVersion("$(VersionNumber)")' />
+
+
+ <Target Name="ZipOutputPath" AfterTargets="Build">
+        <ZipDirectory
+            SourceDirectory="$(OutputPath)"
+            DestinationFile="$(OutputPath)\..\$(AssemblyName).zip"
+            Overwrite=="true" />
+    </Target>
+    -->
+  <!--<Target Name="PrepareDeployPackage" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">-->
+  <!-- <Target Name="BeforeCompile" DependsOnTargets="CommonBuildDefineModifiedAssemblyVersion">
+  </Target> 
+   <Target Name="GetAssmeblyVersion" AfterTargets="Build">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="MyAssemblyIdentities"/>
+    </GetAssemblyIdentity>
+    <Message Text="Assmebly Version: %(MyAssemblyIdentities.Version)"/>
+  </Target>
+-->
+  <UsingTask TaskName="GetFileVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <AssemblyPath ParameterType="System.String" Required="true" />
+      <Version ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.Diagnostics" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+          Log.LogMessage("Getting version details of assembly at: " + this.AssemblyPath, MessageImportance.High);
+          this.Version = FileVersionInfo.GetVersionInfo(this.AssemblyPath).FileVersion;  
+        ]]></Code>
+    </Task>
+  </UsingTask>
+  <Target Name="PrepareDeployPackage" AfterTargets="Build">
+    <GetFileVersion AssemblyPath="$(TargetPath)">
+      <Output TaskParameter="Version" PropertyName="MyAssemblyFileVersion" />
+    </GetFileVersion>
+    <Message Text="Versioning assemblies" />
+    <MakeDir Directories="$(SolutionDir)\Deploy" />
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(SolutionDir)\Deploy\$(AssemblyName).$(MyAssemblyFileVersion).zip" Overwrite="true" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Noesis.Javascript.0.7.1.0\NativeBinaries\net40\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Noesis.Javascript.0.7.1.0\NativeBinaries\net40\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net451\System.Data.SQLite.Core.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

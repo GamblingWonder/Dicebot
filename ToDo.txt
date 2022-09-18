@@ -1,0 +1,86 @@
+Todo:
+PD login encoding
+999dice betting bug (date format, not set to instance, Both at Datagridview)(??fixed??. no reproduce so far) apparantly not fixed in 3.0.3 beta
+custom clickable when open -- I can't remmeber what this is supposed to be??
+prog mode timer
+logging
+
+hopefully before release:
+losing streak table redo
+468x60 banner
+
+
+Not essential:
+clean up + organize code
+multilingual support
+finish tooltips (don't want to do without the multi lingual support finnished)
+
+Done:
+v3:
+fix simulations - done, i think
+chart - done
+live charts -done
+fix int and decimal parser for regions -- should be done
+zero betting/pre-betting
+pd seed reset limiter
+use NUDS instead of textboxes everywhere
+pd error messages -Done for now
+jd ROLL -Fixed
+JD balance -Fixed
+withdraw button
+invest button
+logout
+disable certain buttons untill logged in
+on closing kill all api threads
+view old bets table - stil needs work. Implement data pager instead of just a gridview
+Disconnect + logout on site change or close
+add settings mode, site to private settings file
+seperate stats and bet method from dobet() to easily switch between strategies
+extra strategies - Fibbonachi and d’Alembert, preset list
+Use radio buttons for different strategy modes (martingale, labouchere, fibbonachi etc)
+update save files
+disable embedded live chart + reset live chart
+tip button
+beginner mode (hide certain settings) -done
+advanced mode (show all settings) -done
+get server seed on randomize (JD)
+finish sqlite implementation (i think it's done)
+Look for server seed of old bets (automatically? on button click? why not both!)
+999Dice currencies
+PD chat fix.
+primedice CPU intensive
+999dice - Incorrect seed hash (possibly), rolls not verifying,betting randomly stops. 
+999dice initital balance for currency[]
+999dice - log in issues,  check for european regions.
+PRC Login
+programmer mode (access to variables, write code for own strategies)
+popout chat
+fibonacci error
+PRC Register
+fix settings window and load (finished but not completely tested)
+Proxy Authentication.
+PD register
+safedice register
+advanced zig zag
+Send bet object to form.
+programmer mode, simulation chance 
+reset on streak profit
+stats reset button
+reset on profit (sal kyk)
+d'Alembert stop/reset on win
+strategy help buttons and 
+programmer mode save and load
+Dynamic currencies for sites
+adjustable number of bets shown in live bets view
+optimize live bet view
+programmer mode swithc currencies
+strategy help pages
+stop and reset on win errors
+chance + max roll calculations
+bitdice
+sd xmr balance
+prog mode user input
+implement other sites
+access load function from prog mode
+migrate all rest api sites to http client
+reason for stopping status message
