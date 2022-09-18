@@ -12,11 +12,14 @@ namespace DiceBot
 {
     public partial class Startup : Form
     {
+
         public Startup()
         {
             InitializeComponent();
         }
+
         string Link = "";
+
         public void Show(string Message, string Link)
         {
             rtbNews.Text = Message;
@@ -31,13 +34,16 @@ namespace DiceBot
         private void btnSite_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(Link))
-            System.Diagnostics.Process.Start(Link);
-            
+            {
+                System.Diagnostics.Process.Start(Link);
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
     }
+
 }

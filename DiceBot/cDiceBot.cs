@@ -24,6 +24,8 @@ using System.Windows.Forms.DataVisualization.Charting;
 using FastColoredTextBoxNS;
 using DiceBot.Core;
 
+using AutoUpdaterDotNET;
+
 namespace DiceBot
 {
 
@@ -82,7 +84,7 @@ namespace DiceBot
         #endregion
 
         //Version number to test against site
-        public const string vers = AppHelpers.AppVersion;
+        //public const string vers = AppHelpers.AppVersion;
         public string UserAgent
         {
             get
@@ -496,7 +498,7 @@ enablesrc=false --set to true to use stop/reset conditions
 function dobet()
 
 end";
-            tsmiVersion.Text = "Version " + vers;
+            tsmiVersion.Text = "Version " + AppHelpers.AppVersion;
 
             foreach (string s in args)
             {
@@ -507,9 +509,9 @@ end";
                 }
             }
 
-            DumpLog("starting bot " + vers, 6);
+            DumpLog("starting bot " + AppHelpers.AppVersion, 6);
             PopulateSaveNames();
-            WriteConsole("Starting Dicebot " + vers);
+            WriteConsole("Starting Dicebot " + AppHelpers.AppVersion);
             PopoutChat.SendMessage += PopoutChat_SendMessage;
             SimWindow = new Simulate(this);
 
@@ -1171,8 +1173,6 @@ end";
                             {
                                 Link = ss[3];
                             }
-
-
                             ShowStartup(Message, Link);
                         }
                     }
@@ -1193,7 +1193,6 @@ end";
             {
                 Invoke(new dShowStartup(ShowStartup), Message, Link);
                 return;
-
             }
             else
             {
@@ -1219,6 +1218,7 @@ end";
         {
 
             testInputs();
+
             if (pnlBasic.Visible)
             {
                 scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
@@ -1235,7 +1235,18 @@ end";
             richTextBox3.BringToFront();
             pnlControlProgrammer.SendToBack();
             pnlLoadProgrammer.SendToBack();
+
+            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
+            //AutoUpdater.Start("https://rbsoft.org/updates/AutoUpdaterTest.xml");
+            AutoUpdater.Start("https://github.com/WinMachine777/Dicebot/blob/prod/version.xml");
         }
+        private void AutoUpdater_ApplicationExitEvent()
+        {
+            Text = @"Closing application...";
+            Thread.Sleep(5000);
+            Application.Exit();
+        }
+
 
         //Statistics
         //includes - 

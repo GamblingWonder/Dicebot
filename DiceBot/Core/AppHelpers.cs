@@ -1,12 +1,21 @@
-﻿namespace DiceBot
+﻿using System.Reflection;
+
+namespace DiceBot
 {
 
 
     public class AppHelpers
     {
-        public const string AppName = "DICEBot by WinMachine";
-        public const string AppVersion = "4.1.19.0";
 
+        public const string AppName = "DICEBot by WinMachine";
+
+        public static string AppVersion
+        {
+            get
+            {
+                return string.Format("{0}", Assembly.GetEntryAssembly().GetName().Version);
+            }
+        }
 
         public const string DateTimeCounterFormat = @"d'D, 'hh\:mm\:ss";
 
@@ -14,7 +23,7 @@
         {
             get
             {
-                return AppName + " [" + AppVersion + "]" ;
+                return AppName + " [" + AppVersion + "]";
             }
         }
 

@@ -235,6 +235,12 @@
     <Compile Include="Core\Schema\cBet.cs" />
     <Compile Include="Core\DiceSite.cs" />
     <Compile Include="Core\Random.cs" />
+    <Compile Include="Launcher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Launcher.Designer.cs">
+      <DependentUpon>Launcher.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sites\BetKing.cs" />
     <Compile Include="BitdiceConfirm.cs">
       <SubType>Form</SubType>
@@ -427,6 +433,9 @@
     <EmbeddedResource Include="Graph.resx">
       <DependentUpon>Graph.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Launcher.resx">
+      <DependentUpon>Launcher.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LoginFailedForm.resx">
       <DependentUpon>LoginFailedForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -496,7 +505,6 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="logo.ico" />
-    <Content Include="version.xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

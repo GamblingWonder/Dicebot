@@ -19,7 +19,10 @@ namespace DiceBot
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 //Application.Run(new cLogin());
+
                 Application.Run(new cDiceBot(args));
+                //Application.Run(new Launcher(args));
+
             }
             catch (Exception e)
             {
@@ -27,7 +30,10 @@ namespace DiceBot
                 {
                     using (StreamWriter sw = File.AppendText("DICEBOTLOG.txt"))
                     {
+                        
                         sw.WriteLine("########################################################################################\r\n\r\nFATAL CRASH\r\n");
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine("----------------------------------------------------------------------------------------\r\n");
                         sw.WriteLine(e.ToString());
                         sw.WriteLine("########################################################################################");
                     }
