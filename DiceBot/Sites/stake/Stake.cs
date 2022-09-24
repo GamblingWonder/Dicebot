@@ -16,7 +16,6 @@ using static DiceBot.PrimediceSchema;
 using GamblingTools.sdk.Connectors.Stake;
 using GamblingTools.sdk;
 using Newtonsoft.Json;
-using RestSharp.Serialization.Json;
 using GamblingTools.sdk.gql;
 
 namespace DiceBot.Schema.Stake
@@ -202,7 +201,7 @@ namespace DiceBot
                         Parent.updateLosses(losses);
 
                     }
-                    //Thread.Sleep(1000);
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
             catch (Exception e)
