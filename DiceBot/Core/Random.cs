@@ -1,9 +1,9 @@
 ﻿using System;
-
 using System.Security.Cryptography;
 
 namespace DiceBot.Core
 {
+
     public class DBRandom
     {
 

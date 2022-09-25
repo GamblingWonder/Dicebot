@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DiceBot</RootNamespace>
     <AssemblyName>DiceBot</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -301,6 +301,7 @@
     <Compile Include="Core\Schema\cBet.cs" />
     <Compile Include="Core\DiceSite.cs" />
     <Compile Include="Core\Random.cs" />
+    <Compile Include="Core\Utils.cs" />
     <Compile Include="Launcher.cs">
       <SubType>Form</SubType>
     </Compile>
