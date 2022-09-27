@@ -13,10 +13,10 @@ using GraphQL.Common.Response;
 using System.Globalization;
 using DiceBot.Core;
 using static DiceBot.PrimediceSchema;
-using GamblingTools.sdk.Connectors.Stake;
-using GamblingTools.sdk;
+
 using Newtonsoft.Json;
-using GamblingTools.sdk.gql;
+using Connectors.Stake;
+using Connectors.Stake.Response;
 
 namespace DiceBot.Schema.Stake
 {
@@ -74,16 +74,7 @@ namespace DiceBot
         long uid = 0;
         DateTime lastupdate = new DateTime();
 
-
-
-        // HttpClient Client;// = new HttpClient { BaseAddress = new Uri("https://api.primedice.com/api/") };
-        // HttpClientHandler ClientHandlr;
-        // GraphQL.Client.GraphQLClient GQLClient;
-
-        StakeApiClient ApiClient;
-
-        Cnx connection;
-
+        APIClientManager APIClientManager;
 
         bool getid = false;
 
@@ -113,6 +104,7 @@ namespace DiceBot
             GameName = "CasinoGameDice";
             StatGameName = "dice";
             EnumName = "CasinoGameDiceConditionEnum";
+
             HaveMirrors = true;
             MirrorList = new List<string>();
             MirrorList.Add("stake.com");
@@ -161,17 +153,29 @@ namespace DiceBot
                         ForceUpdateStats = false;
                         lastupdate = DateTime.Now;
 
+                        /*
                         var req = new RequestData()
                         {
                             operationName = "DiceBotGetBalance",
                             query = "query DiceBotGetBalance{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
                         };
-
                         var response = ApiClient.Execute(req);
-
                         var user = response.Get<pdUser>("user");
+                        */
 
-                        foreach (Statistic x in user.statistic)
+
+                        var req = new RequestPayload()
+                        {
+                            operationName = "DiceBotGetBalance",
+                            query = "query DiceBotGetBalance{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
+                        };
+
+                        var restResponse = APIClientManager.Execute(req).Result;
+                        var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
+
+
+
+                        foreach (Statistic x in response.Data.User.Statistics)
                         {
                             if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
                             {
@@ -184,7 +188,7 @@ namespace DiceBot
                             }
                         }
 
-                        foreach (Balance x in user.balances)
+                        foreach (PrimediceSchema.Balance x in response.Data.User.Balances)
                         {
                             if (x.available.currency.ToLower() == Currency.ToLower())
                             {
@@ -201,7 +205,7 @@ namespace DiceBot
                         Parent.updateLosses(losses);
 
                     }
-                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    //Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
             }
             catch (Exception e)
@@ -245,20 +249,35 @@ namespace DiceBot
 
                 settings.Update("", Password);
 
+                /*
                 ApiClient = null;
                 ApiClient = new StakeApiClient(settings);
-
                 var req = new RequestData()
                 {
                     operationName = "DiceBotLogin",
                     query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
                 };
-
                 var response = ApiClient.Execute(req);
-
                 var user = response.Get<pdUser>("user");
-
                 userid = user.id;
+                */
+
+
+                APIClientManager = new APIClientManager(settings.Site, settings.ApiKey);
+
+
+                var req = new RequestPayload()
+                {
+                    operationName = "DiceBotLogin",
+                    query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
+                };
+
+
+                var auth = APIClientManager.Execute(req).Result;
+
+                var res = JsonConvert.DeserializeObject<PDStake.GenericResponse>(auth.Content);
+
+                userid = res.Data.User.id;
 
                 if (string.IsNullOrWhiteSpace(userid))
                 {
@@ -266,7 +285,8 @@ namespace DiceBot
                 }
                 else
                 {
-                    foreach (Statistic x in user.statistic)
+                    
+                    foreach (Statistic x in res.Data.User.Statistics)
                     {
                         if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
                         {
@@ -278,7 +298,7 @@ namespace DiceBot
                             break;
                         }
                     }
-                    foreach (Balance x in user.balances)
+                    foreach (PrimediceSchema.Balance x in res.Data.User.Balances)
                     {
                         if (x.available.currency.ToLower() == Currency.ToLower())
                         {
@@ -286,7 +306,7 @@ namespace DiceBot
                             break;
                         }
                     }
-
+                    
                     finishedlogin(true);
                     ispd = true;
                     Thread t = new Thread(GetBalanceThread);
@@ -322,8 +342,8 @@ namespace DiceBot
 
                 settings.Update(url);
 
-                ApiClient = null;
-                ApiClient = new StakeApiClient(settings);
+                //ApiClient = null;
+                //ApiClient = new StakeApiClient(settings);
 
             }
         }
@@ -340,7 +360,7 @@ namespace DiceBot
 
                 decimal tmpchance = High ? maxRoll - chance : chance;
 
-                var req = new RequestData()
+                var req = new BetQuery()
                 {
                     operationName = "DiceRoll",
                     query = @"mutation DiceRoll($amount: Float! 
@@ -349,18 +369,23 @@ namespace DiceBot
   $currency: CurrencyEnum!
   $identifier: String!){ diceRoll(amount: $amount, target: $target, condition: $condition, currency: $currency, identifier: $identifier)" +
         " { id nonce currency amount payout state { ... on CasinoGameDice { result target condition } } createdAt serverSeed{seedHash seed nonce} clientSeed{seed} user{balances{available{amount currency}} statistic{game bets wins losses betAmount profit currency}}}}",
-                    variables = new
+                    variables = new BetClass
                     {
                         amount = amount,//.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo),
                         target = tmpchance,//.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo),
                         condition = (High ? "above" : "below"),
                         currency = Currency.ToLower(),
-                        identifier = "0123456789abcdef"
+                        //identifier = "0123456789abcdef",
+                        identifier = Utils.RandomString(21)
                     }
                 };
 
-                var response = ApiClient.Execute(req);
+                //var response = ApiClient.Execute(req);
+                var restResponse = APIClientManager.Execute(req).Result;
 
+                var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
+
+                
                 if (response.Errors != null)
                 {
                     if (response.Errors.Count > 0)
@@ -372,7 +397,7 @@ namespace DiceBot
                 if (response.Data != null)
                 {
 
-                    RollDice tmp = response.Get<RollDice>("diceRoll");
+                    RollDice tmp = response.Data.DiceBetResult;
 
                     Lastbet = DateTime.Now;
 
@@ -381,7 +406,7 @@ namespace DiceBot
 
                         lastupdate = DateTime.Now;
 
-                        foreach (Statistic x in tmp.user.statistic)
+                        foreach (var x in tmp.User.Statistics)
                         {
                             if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
                             {
@@ -394,7 +419,7 @@ namespace DiceBot
                             }
                         }
 
-                        foreach (Balance x in tmp.user.balances)
+                        foreach (var x in tmp.User.Balances)
                         {
                             if (x.available.currency.ToLower() == Currency.ToLower())
                             {
@@ -420,6 +445,7 @@ namespace DiceBot
                         Parent.updateStatus("Some kind of error happened. I don't really know graphql, so your guess as to what went wrong is as good as mine.");
                     }
                 }
+                
             }
             catch (AggregateException e)
             {
@@ -434,8 +460,6 @@ namespace DiceBot
                     Thread.Sleep(500);
                     placebetthread(new PlaceBetObj(High, amount, chance, (bet as PlaceBetObj).Guid));
                 }
-
-
             }
             catch (Exception e2)
             {
@@ -452,7 +476,7 @@ namespace DiceBot
 
         internal string GetBetIId(string betId)
         {
-
+            /*
             using (var connector = new StakeSharedConnector(settings))
             {
                 var req = new RequestData()
@@ -464,34 +488,56 @@ namespace DiceBot
                         betId = betId
                     }
                 };
-
                 connector.AddRequest(req);
-
                 var response = connector.ExecuteRequest();
-
                 if (response.Data != null)
                 {
-
                     var iid = response.GetData().bet.iid;
-
                     //tmpbet.Id = betresult2.Data.bet.iid;
                     if (iid.Contains("house:"))
                     {
                         betId = iid.Substring("house:".Length);
                     }
+                }
+            }
 
+            return betId;
+            */
+
+            var req = new RequestPayload()
+            {
+                operationName = "DiceBotGetBetId",
+                query = "query DiceBotGetBetId ( $betId: String! ) { bet ( betId: $betId ) {iid} }",
+                variables = new
+                {
+                    betId = betId
+                }
+            };
+
+            var restResponse = APIClientManager.Execute(req).Result;
+            var response = JsonConvert.DeserializeObject<PrimediceSchema.Data>(restResponse.Content);
+
+            if (response.bet != null)
+            {
+
+                var iid = response.bet.iid;
+
+                //tmpbet.Id = betresult2.Data.bet.iid;
+                if (iid.Contains("house:"))
+                {
+                    betId = iid.Substring("house:".Length);
                 }
 
             }
 
             return betId;
-
         }
 
         public override void ResetSeed()
         {
             try
             {
+                /*
                 using (var gqlrequest = new StakeCustomGQLRequest(settings))
                 {
                     var req = new RequestData()
@@ -523,6 +569,7 @@ namespace DiceBot
                     }
 
                 }
+                */
 
             }
             catch (Exception e)
@@ -549,21 +596,29 @@ namespace DiceBot
         {
             try
             {
-                using (var gqlrequest = new StakeCustomGQLRequest(settings))
+
+                //using (var gqlrequest = new StakeCustomGQLRequest(settings))
+                //{
+                //    var req = new RequestData()
+                //    {
+                //        operationName = "createWithdrawal",
+                //        query = "mutation DiceBotWithdrawal{createWithdrawal(currency:" + Currency.ToLower() + ", address:\"" + Address + "\",amount:" + amount.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo) + "){id name address hash amount walletFee createdAt status currency}}"
+                //    };
+                //    gqlrequest.AddRequest(req);
+                //    var response = gqlrequest.ExecuteRequest();
+                //    return response.Data != null;
+                //}
+
+                var req = new RequestPayload()
                 {
+                    operationName = "createWithdrawal",
+                    query = "mutation DiceBotWithdrawal{createWithdrawal(currency:" + Currency.ToLower() + ", address:\"" + Address + "\",amount:" + amount.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo) + "){id name address hash amount walletFee createdAt status currency}}"
+                };
 
-                    var req = new RequestData()
-                    {
-                        operationName = "createWithdrawal",
-                        query = "mutation DiceBotWithdrawal{createWithdrawal(currency:" + Currency.ToLower() + ", address:\"" + Address + "\",amount:" + amount.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo) + "){id name address hash amount walletFee createdAt status currency}}"
-                    };
+                var restResponse = APIClientManager.Execute(req).Result;
+                // var response = JsonConvert.DeserializeObject<PrimediceSchema.Data>(restResponse.Content);
 
-                    gqlrequest.AddRequest(req);
-
-                    var response = gqlrequest.ExecuteRequest();
-
-                    return response.Data != null;
-                }
+                return restResponse.StatusCode == HttpStatusCode.OK;
 
             }
             catch
@@ -577,25 +632,25 @@ namespace DiceBot
             try
             {
 
-                using (var gqlrequest = new StakeCustomGQLRequest(settings))
-                {
+                //using (var gqlrequest = new StakeCustomGQLRequest(settings))
+                //{
+                //    var req = new RequestData()
+                //    {
+                //        variables = new
+                //        {
+                //            currency = Currency.ToLower(),
+                //            amount = amount
+                //        },
+                //        query = "mutation CreateVaultDeposit($currency: CurrencyEnum!, $amount: Float!) {\n  createVaultDeposit(currency: $currency, amount: $amount) {\n    id\n    amount\n    currency\n    user {\n      id\n      balances {\n        available {\n          amount\n          currency\n          __typename\n        }\n        vault {\n          amount\n          currency\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"
+                //    };
+                //    gqlrequest.AddRequest(req);
+                //    var response = gqlrequest.ExecuteRequest();
+                //    return response.Data != null;
+                //}
 
-                    var req = new RequestData()
-                    {
-                        variables = new
-                        {
-                            currency = Currency.ToLower(),
-                            amount = amount
-                        },
-                        query = "mutation CreateVaultDeposit($currency: CurrencyEnum!, $amount: Float!) {\n  createVaultDeposit(currency: $currency, amount: $amount) {\n    id\n    amount\n    currency\n    user {\n      id\n      balances {\n        available {\n          amount\n          currency\n          __typename\n        }\n        vault {\n          amount\n          currency\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"
-                    };
+                var restResponse = APIClientManager.SendToVault(Currency.ToLower(), amount).Result;
 
-                    gqlrequest.AddRequest(req);
-
-                    var response = gqlrequest.ExecuteRequest();
-
-                    return response.Data != null;
-                }
+                return restResponse.StatusCode == HttpStatusCode.OK;
 
             }
             catch (Exception e)
@@ -667,7 +722,7 @@ namespace DiceBot
                 {
                     //string sEmitResponse = Client.GetStringAsync("logout?api_key=" + accesstoken).Result;
 
-                    ApiClient.Disconnect();
+                    //ApiClient.Disconnect();
                     accesstoken = "";
                 }
                 catch
@@ -687,6 +742,7 @@ namespace DiceBot
             try
             {
 
+                /*
                 var gqlrequest = new StakeCustomGQLRequest(settings);
 
                 var payload = new RequestData()
@@ -710,6 +766,8 @@ namespace DiceBot
                 var response = gqlrequest.ExecuteRequest();
 
                 return response.Data != null;
+                */
+
 
             }
             catch (Exception e)
@@ -731,6 +789,7 @@ namespace DiceBot
             {
                 string userid = "";
 
+                /*
                 using (var gqlrequest = new StakeCustomGQLRequest(settings))
                 {
                     var payload = new RequestData()
@@ -748,7 +807,7 @@ namespace DiceBot
 
                     userid = user.id;
                 }
-
+                */
                 return userid;
 
             }

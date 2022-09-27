@@ -33,6 +33,38 @@ namespace DiceBot
 
     }
 
+    public class PDStake : PrimediceSchema
+    {
+        public class Errors
+        {
+            public List<string> path { get; set; }
+            public string message { get; set; }
+            public string errorType { get; set; }
+            public string data { get; set; }
+        }
+
+        public class GenericResponse
+        {
+            [JsonProperty("data")]
+            public GenericData Data { get; set; }
+
+            [JsonProperty("errors")]
+            public List<Errors> Errors { get; set; }
+        }
+
+        public class GenericData
+        {
+            [JsonProperty("user")]
+            public pdUser User { get; set; }
+
+            [JsonProperty("diceRoll")]
+            public RollDice DiceBetResult { get; set; }
+
+
+        }
+
+    }
+
     public class PrimediceSchema : SiteSchemaBase
     {
 
@@ -98,8 +130,12 @@ namespace DiceBot
             public List<object> roles { get; set; }
             public string __typename { get; set; }
             public Balance balance { get; set; }
-            public Balance[] balances { get; set; }
-            public List<Statistic> statistic { get; set; }
+
+            [JsonProperty("balances")]
+            public Balance[] Balances { get; set; }
+
+            [JsonProperty("statistic")]
+            public List<Statistic> Statistics { get; set; }
             public pdSeed activeServerSeed { get; set; }
             public pdSeed activeClientSeed { get; set; }
         }
@@ -143,7 +179,9 @@ namespace DiceBot
             public string createdAt { get; set; }
             public string currency { get; set; }
             public DiceState state { get; set; }
-            public pdUser user { get; set; }
+
+            [JsonProperty("user")]
+            public pdUser User { get; set; }
             public string __typename { get; set; }
             public pdSeed serverSeed { get; set; }
             public pdSeed clientSeed { get; set; }
@@ -159,7 +197,7 @@ namespace DiceBot
                     date = DateTime.Now,
                     Id = id,
                     Roll = (decimal)state.result,
-                    UserName = user.name,
+                    UserName = User.name,
                     clientseed = clientSeed.seed,
                     serverhash = serverSeed.seedHash,
                     nonce = nonce
@@ -329,7 +367,7 @@ namespace DiceBot
 
                         pdUser user = Resp.Data.User;
 
-                        foreach (Statistic x in user.statistic)
+                        foreach (Statistic x in user.Statistics)
                         {
                             if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
                             {
@@ -342,7 +380,7 @@ namespace DiceBot
                             }
                         }
 
-                        foreach (Balance x in user.balances)
+                        foreach (Balance x in user.Balances)
                         {
                             if (x.available.currency.ToLower() == Currency.ToLower())
                             {
@@ -423,7 +461,7 @@ namespace DiceBot
                 }
                 else
                 {
-                    foreach (Statistic x in user.statistic)
+                    foreach (Statistic x in user.Statistics)
                     {
                         if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
                         {
@@ -435,7 +473,7 @@ namespace DiceBot
                             break;
                         }
                     }
-                    foreach (Balance x in user.balances)
+                    foreach (Balance x in user.Balances)
                     {
                         if (x.available.currency.ToLower() == Currency.ToLower())
                         {
@@ -534,7 +572,7 @@ namespace DiceBot
                     {
 
                         lastupdate = DateTime.Now;
-                        foreach (Statistic x in tmp.user.statistic)
+                        foreach (Statistic x in tmp.User.Statistics)
                         {
                             if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
                             {
@@ -546,7 +584,7 @@ namespace DiceBot
                                 break;
                             }
                         }
-                        foreach (Balance x in tmp.user.balances)
+                        foreach (Balance x in tmp.User.Balances)
                         {
                             if (x.available.currency.ToLower() == Currency.ToLower())
                             {
