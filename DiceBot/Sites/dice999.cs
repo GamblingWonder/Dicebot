@@ -320,7 +320,7 @@ namespace DiceBot
             t.Start(new PlaceBetObj(High, amount, chance, guid));
         }
 
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             throw new NotImplementedException();
         }

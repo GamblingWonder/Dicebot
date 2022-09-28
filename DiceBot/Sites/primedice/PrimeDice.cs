@@ -35,6 +35,29 @@ namespace DiceBot
 
     public class PDStake : PrimediceSchema
     {
+
+        public abstract class ResponseBaseAs<TResult>
+        {
+            public TResult Result { get; set; }
+            public Exception Error { get; set; }
+        }
+
+        public class ResponseAs<TResult> : ResponseBaseAs<TResult>
+        {
+            public ResponseAs(TResult result)
+            {
+                Result = result;
+            }
+        }
+
+        public class ErrorAs<TResult> : ResponseBaseAs<TResult>
+        {
+            public ErrorAs(Exception error)
+            {
+                base.Error = error;
+            }
+        }
+
         public class Errors
         {
             public List<string> path { get; set; }
@@ -59,6 +82,9 @@ namespace DiceBot
 
             [JsonProperty("diceRoll")]
             public RollDice DiceBetResult { get; set; }
+
+            [JsonProperty("bet")]
+            public RollDice Bet { get; set; }
 
 
         }
@@ -657,7 +683,7 @@ namespace DiceBot
 
         DBRandom R = new DBRandom();
 
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             try
             {

@@ -767,7 +767,7 @@ namespace DiceBot
         }
 
 
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             //string request = $"token={accesstoken}&secret=0&act=new_server_seed";
             //{"success":true,"server_seed":"b10982af50874add19b6dc54c8e76ccb2e1f5b86b6047730ddfb4cdee2fd8fbf","server_hash":"d6de3617918df1d6c5d34f36833a02733e595c6a58a7088fa7a7e9aebc2fbe1e"}

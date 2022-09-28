@@ -489,7 +489,7 @@ currency:btc*/
 
         DBRandom R = new DBRandom();
         DateTime LastReset = new DateTime();
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             //Just wanted to test if this works. It doesn't. Will work with the bitsler team to
             //expand functionality in the future.

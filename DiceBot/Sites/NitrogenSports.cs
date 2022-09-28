@@ -358,7 +358,7 @@ Sec-WebSocket-Version:13*/
         }
 
         DBRandom R = new DBRandom();
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             int length = R.Next(8, 32);
             string s = "";
