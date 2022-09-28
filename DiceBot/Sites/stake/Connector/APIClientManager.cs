@@ -1,4 +1,5 @@
 ﻿using Connectors.Stake.Response;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-
+using static DiceBot.PDStake;
 
 namespace Connectors.Stake.Response
 {
@@ -752,17 +753,34 @@ namespace Connectors.Stake
                 CreateOrUseDefaultRestClient();
                 var request = CreateDefaultRestRequest(ApiKey);
                 request.AddJsonBody(payload);
-                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
+                var restResponse =  SharedRestClient.ExecuteAsync(request).Result;
                 return restResponse;
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
-                return null;
+                throw new Exception(ex.Message,ex);
+            }
+        }
+
+
+        public async Task<ResponseBaseAs<TResult>> Execute<TResult>(RequestPayload payload)
+        {
+            try
+            {
+                CreateOrUseDefaultRestClient();
+                var request = CreateDefaultRestRequest(ApiKey);
+                request.AddJsonBody(payload);
+                var restResponse =  SharedRestClient.ExecuteAsync(request).Result;
+                return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorAs<TResult>(ex);
             }
 
         }
 
+        /*
         public async Task<IRestResponse> Execute(BetQuery payload)
         {
             try
@@ -780,5 +798,6 @@ namespace Connectors.Stake
             }
 
         }
+        */
     }
 }

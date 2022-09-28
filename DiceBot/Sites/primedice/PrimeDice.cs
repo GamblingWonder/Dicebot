@@ -35,6 +35,39 @@ namespace DiceBot
 
     public class PDStake : PrimediceSchema
     {
+
+        public abstract class ResponseBaseAs<TResult>
+        {
+            public TResult Result { get; set; }
+            public Exception Error { get; set; }
+
+            /*
+            public ResponseBaseAs(Exception error)
+            {
+                Error = error;
+            }
+            public ResponseBaseAs(TResult result)
+            {
+                Result = result;
+            }
+            */
+        }
+        public class ResponseAs<TResult> : ResponseBaseAs<TResult>
+        {
+            public ResponseAs(TResult result)
+            {
+                Result = result;
+            }
+
+        }
+        public class ErrorAs<TResult> : ResponseBaseAs<TResult>
+        {
+            public ErrorAs(Exception error)
+            {
+                base.Error = error;
+            }
+        }
+
         public class Errors
         {
             public List<string> path { get; set; }

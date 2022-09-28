@@ -170,10 +170,10 @@ namespace DiceBot
                             query = "query DiceBotGetBalance{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
                         };
 
-                        var restResponse = APIClientManager.Execute(req).Result;
-                        var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
+                        var restResponse = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
+                        //var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
 
-
+                        var response = restResponse.Result;
 
                         foreach (Statistic x in response.Data.User.Statistics)
                         {
@@ -273,9 +273,9 @@ namespace DiceBot
                 };
 
 
-                var auth = APIClientManager.Execute(req).Result;
-
-                var res = JsonConvert.DeserializeObject<PDStake.GenericResponse>(auth.Content);
+                var auth = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
+                //var res = JsonConvert.DeserializeObject<PDStake.GenericResponse>(auth.Content);
+                var res = auth.Result;
 
                 userid = res.Data.User.id;
 
@@ -285,7 +285,7 @@ namespace DiceBot
                 }
                 else
                 {
-                    
+
                     foreach (Statistic x in res.Data.User.Statistics)
                     {
                         if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
@@ -306,7 +306,7 @@ namespace DiceBot
                             break;
                         }
                     }
-                    
+
                     finishedlogin(true);
                     ispd = true;
                     Thread t = new Thread(GetBalanceThread);
@@ -360,7 +360,7 @@ namespace DiceBot
 
                 decimal tmpchance = High ? maxRoll - chance : chance;
 
-                var req = new BetQuery()
+                var req = new RequestPayload()
                 {
                     operationName = "DiceRoll",
                     query = @"mutation DiceRoll($amount: Float! 
@@ -381,11 +381,12 @@ namespace DiceBot
                 };
 
                 //var response = ApiClient.Execute(req);
-                var restResponse = APIClientManager.Execute(req).Result;
+                var restResponse = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
 
-                var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
+                // var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
 
-                
+                var response = restResponse.Result;
+
                 if (response.Errors != null)
                 {
                     if (response.Errors.Count > 0)
@@ -445,7 +446,7 @@ namespace DiceBot
                         Parent.updateStatus("Some kind of error happened. I don't really know graphql, so your guess as to what went wrong is as good as mine.");
                     }
                 }
-                
+
             }
             catch (AggregateException e)
             {
@@ -514,13 +515,13 @@ namespace DiceBot
                 }
             };
 
-            var restResponse = APIClientManager.Execute(req).Result;
-            var response = JsonConvert.DeserializeObject<PrimediceSchema.Data>(restResponse.Content);
+            var response = APIClientManager.Execute<PrimediceSchema.Data>(req).Result;
+            //var response = JsonConvert.DeserializeObject<PrimediceSchema.Data>(restResponse.Content);
 
-            if (response.bet != null)
+            if (response.Result.bet != null)
             {
 
-                var iid = response.bet.iid;
+                var iid = response.Result.bet.iid;
 
                 //tmpbet.Id = betresult2.Data.bet.iid;
                 if (iid.Contains("house:"))
