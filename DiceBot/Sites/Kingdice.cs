@@ -158,7 +158,7 @@ namespace DiceBot
             { }
         }
 
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             throw new NotImplementedException();
         }

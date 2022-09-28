@@ -11,7 +11,14 @@ using System.IO;
 
 namespace DiceBot.Core
 {
-    public abstract class DiceSite 
+
+    public class CustomSeed
+    {
+        public bool IsCustom { get; set; }
+        public string Value { get; set; }
+    }
+
+    public abstract class DiceSite
     {
         public event EventHandler<RequireCaptchaEventArgs> OnRequireCaptcha;
         protected void RequireCaptcha(RequireCaptchaEventArgs e)
@@ -115,6 +122,8 @@ namespace DiceBot.Core
 
         public string CurrentMirror { get; set; }
 
+        public CustomSeed CustomSeed { get; set; } = new CustomSeed() { IsCustom = false };
+
         public int GetWins()
         {
             return wins;
@@ -159,7 +168,7 @@ namespace DiceBot.Core
 
         }
         protected abstract void internalPlaceBet(bool High, decimal amount, decimal chancem, string BetGuid);
-        public abstract void ResetSeed();
+        public abstract void ResetSeed(string customClientSeed = "");
         public abstract void SetClientSeed(string Seed);
         public virtual bool Invest(decimal Amount)
         {

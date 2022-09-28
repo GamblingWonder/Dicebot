@@ -153,17 +153,6 @@ namespace DiceBot
                         ForceUpdateStats = false;
                         lastupdate = DateTime.Now;
 
-                        /*
-                        var req = new RequestData()
-                        {
-                            operationName = "DiceBotGetBalance",
-                            query = "query DiceBotGetBalance{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
-                        };
-                        var response = ApiClient.Execute(req);
-                        var user = response.Get<pdUser>("user");
-                        */
-
-
                         var req = new RequestPayload()
                         {
                             operationName = "DiceBotGetBalance",
@@ -171,7 +160,6 @@ namespace DiceBot
                         };
 
                         var restResponse = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
-                        //var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
 
                         var response = restResponse.Result;
 
@@ -341,10 +329,6 @@ namespace DiceBot
                 URL = $"https://api.{url}/graphql";
 
                 settings.Update(url);
-
-                //ApiClient = null;
-                //ApiClient = new StakeApiClient(settings);
-
             }
         }
 
@@ -371,19 +355,15 @@ namespace DiceBot
         " { id nonce currency amount payout state { ... on CasinoGameDice { result target condition } } createdAt serverSeed{seedHash seed nonce} clientSeed{seed} user{balances{available{amount currency}} statistic{game bets wins losses betAmount profit currency}}}}",
                     variables = new BetClass
                     {
-                        amount = amount,//.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo),
-                        target = tmpchance,//.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo),
+                        amount = amount,
+                        target = tmpchance,
                         condition = (High ? "above" : "below"),
                         currency = Currency.ToLower(),
-                        //identifier = "0123456789abcdef",
                         identifier = Utils.RandomString(21)
                     }
                 };
 
-                //var response = ApiClient.Execute(req);
                 var restResponse = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
-
-                // var response = JsonConvert.DeserializeObject<PDStake.GenericResponse>(restResponse.Content);
 
                 var response = restResponse.Result;
 
@@ -515,26 +495,20 @@ namespace DiceBot
                 }
             };
 
-            var response = APIClientManager.Execute<PrimediceSchema.Data>(req).Result;
-            //var response = JsonConvert.DeserializeObject<PrimediceSchema.Data>(restResponse.Content);
+            var response = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
 
-            if (response.Result.bet != null)
+            if (response.Result.Data.Bet != null)
             {
-
-                var iid = response.Result.bet.iid;
-
-                //tmpbet.Id = betresult2.Data.bet.iid;
+                var iid = response.Result.Data.Bet.iid;
                 if (iid.Contains("house:"))
                 {
                     betId = iid.Substring("house:".Length);
                 }
-
             }
-
             return betId;
         }
 
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             try
             {
@@ -571,6 +545,39 @@ namespace DiceBot
 
                 }
                 */
+
+                if (!string.IsNullOrEmpty(customClientSeed))
+                {
+                    CustomSeed.IsCustom = true;
+                    CustomSeed.Value = customClientSeed;
+                }
+
+                var req = new RequestPayload()
+                {
+                    operationName = "DiceBotRotateSeed",
+                    query = "mutation DiceBotRotateSeed ($seed: String!){ rotateServerSeed { seed seedHash nonce } changeClientSeed(seed: $seed){seed}}",
+                    variables = new
+                    {
+                        seed =  CustomSeed.IsCustom ? CustomSeed.Value : R.Next(0, int.MaxValue).ToString()
+                    }
+                };
+
+                var response = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
+
+                if (response.Result != null)
+                {
+                    //this.se
+                    //pdSeed user = response.GetDataFieldAs<rotateServerSeed>("rotateServerSeed");
+                    //pdSeed = rs.Get<pdSeed>("user");
+                    //pdSeed = response.Result.Data.User.activeServerSeed;
+                }
+                else if (response.Result.Errors != null && response.Result.Errors.Count > 0)
+                {
+                    foreach (var x in response.Result.Errors)
+                    {
+                        Parent.DumpLog("GRAPHQL ERROR RESETSEED: " + x.message, 1);
+                    }
+                }
 
             }
             catch (Exception e)

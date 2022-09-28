@@ -40,26 +40,16 @@ namespace DiceBot
         {
             public TResult Result { get; set; }
             public Exception Error { get; set; }
-
-            /*
-            public ResponseBaseAs(Exception error)
-            {
-                Error = error;
-            }
-            public ResponseBaseAs(TResult result)
-            {
-                Result = result;
-            }
-            */
         }
+
         public class ResponseAs<TResult> : ResponseBaseAs<TResult>
         {
             public ResponseAs(TResult result)
             {
                 Result = result;
             }
-
         }
+
         public class ErrorAs<TResult> : ResponseBaseAs<TResult>
         {
             public ErrorAs(Exception error)
@@ -92,6 +82,9 @@ namespace DiceBot
 
             [JsonProperty("diceRoll")]
             public RollDice DiceBetResult { get; set; }
+
+            [JsonProperty("bet")]
+            public RollDice Bet { get; set; }
 
 
         }
@@ -690,7 +683,7 @@ namespace DiceBot
 
         DBRandom R = new DBRandom();
 
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             try
             {

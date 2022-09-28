@@ -870,7 +870,9 @@ end";
             Lua.RegisterFunction("invest", this, new dInvest(luainvest).Method);
             Lua.RegisterFunction("tip", this, new dtip(luatip).Method);
             Lua.RegisterFunction("stop", this, new dStop(luaStop).Method);
+
             Lua.RegisterFunction("resetseed", this, new dResetSeed(luaResetSeed).Method);
+
             Lua.RegisterFunction("print", this, new dWriteConsole(WriteConsole).Method);
             Lua.RegisterFunction("getHistory", this, new dluagethistory(luagethistory).Method);
             Lua.RegisterFunction("getHistoryByDate", this, new dluagethistory2(luagethistory).Method);
@@ -884,11 +886,13 @@ end";
             Lua.RegisterFunction("resetstats", this, new dResetStats(resetstats).Method);
             Lua.RegisterFunction("resetprofit", this, new dResetProfit(resetprofit).Method);
             Lua.RegisterFunction("resetpartialprofit", this, new dResetPartialProfit(resetpartialprofit).Method);
+
             Lua.RegisterFunction("setvalueint", this, new dSetValue(LuaSetValue).Method);
             Lua.RegisterFunction("setvaluestring", this, new dSetValue1(LuaSetValue).Method);
             Lua.RegisterFunction("setvaluedecimal", this, new dSetValue2(LuaSetValue).Method);
             Lua.RegisterFunction("setvaluebool", this, new dSetValue3(LuaSetValue).Method);
             Lua.RegisterFunction("getvalue", this, new dGetValue(LuaGetValue).Method);
+
             Lua.RegisterFunction("loadstrategy", this, new dLoadStrat(LuaLoadStrat).Method);
             Lua.RegisterFunction("read", this, new dGetInput(GetInputForLua).Method);
             Lua.RegisterFunction("readadv", this, new dGetInputWithParams(GetInputWithParams).Method);
@@ -1049,10 +1053,19 @@ end";
             }
         }
 
-        void luaResetSeed()
+        void luaResetSeed(string customClientSeed = "")
         {
-            WriteConsole("Resetting Seed!");
-            ResetSeed();
+            if (string.IsNullOrEmpty(customClientSeed))
+            {
+                WriteConsole("Resetting Seed!");
+            }
+            else
+            {
+                WriteConsole("Resetting Seed with custom client seed!");
+            }
+
+            ResetSeed(customClientSeed);
+
         }
         void luaWithdraw(decimal amount, string address)
         {
@@ -1882,19 +1895,26 @@ end";
             }
         }
 
-        void ResetSeed()
+        void ResetSeed(string customClientSeed = "")
         {
             try
             {
                 if (CurrentSite.ChangeSeed)
                 {
+
+                    if(!string.IsNullOrEmpty(customClientSeed))
+                    {
+                        CurrentSite.CustomSeed.IsCustom = true;
+                        CurrentSite.CustomSeed.Value = customClientSeed;
+                    }
+
                     if (RunningSimulation)
                     {
-                        NewSimSeed();
+                        NewSimSeed(customClientSeed);
                     }
                     else
                     {
-                        CurrentSite.ResetSeed();
+                        CurrentSite.ResetSeed(customClientSeed);
                     }
                 }
             }
@@ -1905,7 +1925,7 @@ end";
             }
         }
         string sserver = "";
-        private void NewSimSeed()
+        private void NewSimSeed(string customClientSeed = "")
         {
             string chars = "0123456789abcdef";
             if (!(CurrentSite is dice999 /*|| CurrentSite is YoloDice*/))
@@ -3184,8 +3204,9 @@ end";
         delegate void dInvest(decimal Amount);
         delegate void dtip(string username, decimal amount);
         delegate void dStop();
-        delegate void dResetSeed();
+        delegate void dResetSeed(string customSeed = "");
         delegate void dEnableTimer(System.Windows.Forms.Timer tmr, bool enabled);
+
         void EnableTimer(System.Windows.Forms.Timer tmr, bool enabled)
         {
             if (InvokeRequired)
@@ -6192,13 +6213,18 @@ end";
 
             try
             {
+
+                //if
+
                 Lastbet = (decimal)(double)Lua["nextbet"];
                 Chance = (decimal)(double)Lua["chance"];
                 high = (bool)Lua["bethigh"];
                 CurrentSite.amount = Lastbet;
                 CurrentSite.chance = Chance;
                 if (CurrentSite.Currency != (string)Lua["currency"])
+                {
                     CurrentSite.Currency = (string)Lua["currency"];
+                }
                 EnableReset = (bool)Lua["enablersc"];
                 EnableProgZigZag = (bool)Lua["enablezz"];
             }

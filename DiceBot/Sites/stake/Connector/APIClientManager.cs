@@ -519,7 +519,7 @@ namespace Connectors.Stake
 
                 request.AddJsonBody(payload);
 
-                var restResponse = await SharedRestClient.ExecuteAsync(request);
+                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
 
                 return restResponse;
 
@@ -584,7 +584,7 @@ namespace Connectors.Stake
 
                 request.AddJsonBody(payload);
 
-                var restResponse = await SharedRestClient.ExecuteAsync(request);
+                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
 
                 return restResponse;
 
@@ -704,7 +704,50 @@ namespace Connectors.Stake
             }
         }
 
+        /*
+        public async Task<ResponseBaseAs<TResult>> PlaceDiceBet(decimal amount, decimal target, string condition, string currency)
+        {
+            try
+            {
+              
 
+                CreateOrUseDefaultRestClient();
+
+                var request = CreateDefaultRestRequest(ApiKey);
+
+                var payload = new RequestPayload()
+                {
+                    operationName = "DiceRoll",
+                    query = @"mutation DiceRoll($amount: Float! 
+  $target: Float!
+  $condition: CasinoGameDiceConditionEnum!
+  $currency: CurrencyEnum!
+  $identifier: String!){ diceRoll(amount: $amount, target: $target, condition: $condition, currency: $currency, identifier: $identifier)" +
+       " { id nonce currency amount payout state { ... on CasinoGameDice { result target condition } } createdAt serverSeed{seedHash seed nonce} clientSeed{seed} user{balances{available{amount currency}} statistic{game bets wins losses betAmount profit currency}}}}",
+                    variables = new BetClass
+                    {
+                        amount = amount,
+                        target = target,
+                        condition = condition,
+                        currency = currency,
+                        identifier = RandomString(21)
+                    }
+                };
+
+                request.AddJsonBody(payload);
+
+                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
+
+                return restResponse;
+
+            }
+            catch (Exception ex)
+            {
+                //luaPrint(ex.Message);
+                return null;
+            }
+        }
+        */
 
 
         public async Task<IRestResponse> ResetSeeds()
@@ -744,7 +787,22 @@ namespace Connectors.Stake
         }
 
 
+        public async Task<ResponseBaseAs<TResult>> ExecuteBet<TResult>(RequestPayload payload)
+        {
+            try
+            {
+                CreateOrUseDefaultRestClient();
+                var request = CreateDefaultRestRequest(ApiKey);
+                request.AddJsonBody(payload);
+                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
+                return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content));
+            }
+            catch (Exception ex)
+            {
+                return new ErrorAs<TResult>(ex);
+            }
 
+        }
 
         public async Task<IRestResponse> Execute(RequestPayload payload)
         {
@@ -753,12 +811,12 @@ namespace Connectors.Stake
                 CreateOrUseDefaultRestClient();
                 var request = CreateDefaultRestRequest(ApiKey);
                 request.AddJsonBody(payload);
-                var restResponse =  SharedRestClient.ExecuteAsync(request).Result;
+                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
                 return restResponse;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message,ex);
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -770,7 +828,7 @@ namespace Connectors.Stake
                 CreateOrUseDefaultRestClient();
                 var request = CreateDefaultRestRequest(ApiKey);
                 request.AddJsonBody(payload);
-                var restResponse =  SharedRestClient.ExecuteAsync(request).Result;
+                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
                 return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content));
             }
             catch (Exception ex)

@@ -196,7 +196,7 @@ namespace DiceBot
             new Thread(new ParameterizedThreadStart(PlaceBetThread)).Start(new PlaceBetObj(High, amount, chance, Guid));
         }
 
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
 
         }

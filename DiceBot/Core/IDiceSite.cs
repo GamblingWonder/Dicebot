@@ -21,7 +21,7 @@ namespace DiceBot.Core
         void PlaceBet(bool High, decimal amount, decimal chance, string BetGuid);
         bool ReadyToBet();
         bool Register(string username, string password);
-        void ResetSeed();
+        void ResetSeed(string customClientSeed = "");
         void SendChatMessage(string Message);
 
         void SetClientSeed(string Seed);

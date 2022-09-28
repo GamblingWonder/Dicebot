@@ -240,7 +240,7 @@ namespace DiceBot
             new Thread(new ParameterizedThreadStart(PlaceBetThreead)).Start(new PlaceBetObj(High, amount, chance, Guid));
         }
         DBRandom R = new DBRandom();
-        public override void ResetSeed()
+        public override void ResetSeed(string customClientSeed = "")
         {
             try
             {
