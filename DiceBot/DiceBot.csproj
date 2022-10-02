@@ -444,6 +444,24 @@
     <Compile Include="Startup.Designer.cs">
       <DependentUpon>Startup.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\AdvancedStrategySettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\AdvancedStrategySettingsControl.Designer.cs">
+      <DependentUpon>AdvancedStrategySettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\BasicStrategySettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\BasicStrategySettingsControl.Designer.cs">
+      <DependentUpon>BasicStrategySettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ProgrammerModeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ProgrammerModeControl.Designer.cs">
+      <DependentUpon>ProgrammerModeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\StatsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -538,6 +556,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Startup.resx">
       <DependentUpon>Startup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\AdvancedStrategySettingsControl.resx">
+      <DependentUpon>AdvancedStrategySettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\BasicStrategySettingsControl.resx">
+      <DependentUpon>BasicStrategySettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ProgrammerModeControl.resx">
+      <DependentUpon>ProgrammerModeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\StatsControl.resx">
       <DependentUpon>StatsControl.cs</DependentUpon>
