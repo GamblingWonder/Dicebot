@@ -285,7 +285,8 @@ namespace DiceBot
 
     public class PrimeDice : DiceSite
     {
-        protected string URL = "https://api.primedice.com/graphql";
+        //protected string URL = "https://api.primedice.com/graphql";
+        protected string URL = "https://primedice.com/_api/graphql";
         protected string RolName = "primediceRoll";
         protected string GameName = "CasinoGamePrimedice";
         protected string EnumName = "CasinoGamePrimediceConditionEnum";
@@ -542,7 +543,8 @@ namespace DiceBot
             {
                 BetURL = $"https://api.{url}/bets/";
                 SiteURL = $"https://{url}/";
-                URL = $"https://api.{url}/graphql";
+                //URL = $"https://api.{url}/graphql";
+                URL = $"https://{url}/_api/graphql";
                 //base.UpdateMirror(url);
             }
         }

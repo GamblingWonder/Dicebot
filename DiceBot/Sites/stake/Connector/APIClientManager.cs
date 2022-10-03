@@ -367,11 +367,17 @@ namespace Connectors.Stake
 
             if (!string.IsNullOrEmpty(site))
             {
+                //this.Site = site;
+                //this.Referrer = $"https://api.{site}";
+                //this.ApiEndPoint = $"https://api.{site}";
+                //this.WebSocketEndPoint = $"wss://api.{site}/graphql";
+                //this.GraphQLEndPoint = $"https://api.{site}/graphql";
+
                 this.Site = site;
-                this.Referrer = $"https://api.{site}";
-                this.ApiEndPoint = $"https://api.{site}";
-                this.WebSocketEndPoint = $"wss://api.{site}/graphql";
-                this.GraphQLEndPoint = $"https://api.{site}/graphql";
+                this.Referrer = $"https://{site}";
+                this.ApiEndPoint = $"https://{site}/_api";
+                this.WebSocketEndPoint = $"wss://{site}/_api/graphql";
+                this.GraphQLEndPoint = $"https://{site}/_api/graphql";
             }
 
             if (!string.IsNullOrEmpty(apiKey))
@@ -435,7 +441,8 @@ namespace Connectors.Stake
                 return;
             }
 
-            ApiUrl = "https://api." + Domain + "/graphql";
+            //ApiUrl = "https://api." + Domain + "/graphql";
+            ApiUrl = "https://" + Domain + "/_api/graphql";
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 

@@ -63,6 +63,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlProgrammer.AutoScroll = true;
+            this.pnlProgrammer.BackColor = System.Drawing.Color.Gray;
             this.pnlProgrammer.Controls.Add(this.tabControl2);
             this.pnlProgrammer.Controls.Add(this.pnlControlProgrammer);
             this.pnlProgrammer.Location = new System.Drawing.Point(0, 0);

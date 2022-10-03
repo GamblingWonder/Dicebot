@@ -187,6 +187,11 @@ namespace DiceBot
         #endregion
 
 
+        //settings mode combobox
+        List<TabPage> Tabs = new List<TabPage>();
+        bool ViewedAdvanced = false;
+
+
         bool high = true;
         bool starthigh = true;
         private bool withdrew;
@@ -1238,11 +1243,10 @@ end";
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+
+
+        private void UpdateSettingsPanelSizes()
         {
-
-            testInputs();
-
             if (pnlBasic.Visible)
             {
                 scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
@@ -1255,6 +1259,13 @@ end";
             {
                 scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
             }
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+            testInputs();
+            UpdateSettingsPanelSizes();
+
 
             richTextBox3.BringToFront();
             programmerModeControl1.pnlControlProgrammer.SendToBack();
@@ -4459,27 +4470,28 @@ end";
                     this.Hide();
                 }
             }
-            if (pnlBasic.Visible)
-            {
-                if ((scMain.Width - pnlBasic.Width) - 3 > 0)
-                {
-                    scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
-                }
-            }
-            else if (pnlAdvanced.Visible)
-            {
-                if ((scMain.Width - pnlAdvanced.Width) - 3 > 0)
-                {
-                    scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
-                }
-            }
-            else if (pnlProgrammer.Visible)
-            {
-                if ((scMain.Width - pnlProgrammer.Width) - 3 > 0)
-                {
-                    scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
-                }
-            }
+            //if (pnlBasic.Visible)
+            //{
+            //    if ((scMain.Width - pnlBasic.Width) - 3 > 0)
+            //    {
+            //        scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
+            //    }
+            //}
+            //else if (pnlAdvanced.Visible)
+            //{
+            //    if ((scMain.Width - pnlAdvanced.Width) - 3 > 0)
+            //    {
+            //        scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
+            //    }
+            //}
+            //else if (pnlProgrammer.Visible)
+            //{
+            //    if ((scMain.Width - pnlProgrammer.Width) - 3 > 0)
+            //    {
+            //        scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
+            //    }
+            //}
+            UpdateSettingsPanelSizes();
         }
 
         void menuitemclick(object sender, EventArgs e)
@@ -5616,9 +5628,7 @@ end";
             }
         }
 
-        //settings mode combobox
-        List<TabPage> Tabs = new List<TabPage>();
-        bool ViewedAdvanced = false;
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((sender as ToolStripMenuItem).Checked)
@@ -5627,7 +5637,7 @@ end";
                 {
                     pnlProgrammer.Visible = pnlAdvanced.Visible = false;
                     pnlBasic.Visible = true;
-                    scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
+                    //scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
                     if (ViewedAdvanced)
                     {
                         MessageBox.Show("Please note: Settings set in the advanced mode are still be active.");
@@ -5638,16 +5648,18 @@ end";
                     ViewedAdvanced = true;
                     pnlAdvanced.Visible = true;
                     pnlProgrammer.Visible = pnlBasic.Visible = false;
-                    scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
+                    //scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
                 }
                 else if ((sender as ToolStripMenuItem).Name == "programmerToolStripMenuItem")
                 {
                     ViewedAdvanced = true;
                     pnlProgrammer.Visible = true;
                     pnlAdvanced.Visible = pnlBasic.Visible = false;
-                    scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
+                    //scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
 
                 }
+
+                UpdateSettingsPanelSizes();
             }
         }
 
