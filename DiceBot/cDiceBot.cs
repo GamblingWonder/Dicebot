@@ -187,6 +187,11 @@ namespace DiceBot
         #endregion
 
 
+        //settings mode combobox
+        List<TabPage> Tabs = new List<TabPage>();
+        bool ViewedAdvanced = false;
+
+
         bool high = true;
         bool starthigh = true;
         private bool withdrew;
@@ -459,6 +464,7 @@ namespace DiceBot
                 btnLogIn.Text = "Log In";
             }
         }
+
         FastColoredTextBox richTextBox3;
 
         DiceEngine EngineX;
@@ -477,14 +483,13 @@ namespace DiceBot
 
             InitializeComponent();
 
-
             Text = AppHelpers.AppFullName;
 
             richTextBox3 = new FastColoredTextBox();
             richTextBox3.Dock = DockStyle.Fill;
             richTextBox3.Language = Language.Lua;
             richTextBox3.BorderStyle = BorderStyle.FixedSingle;
-            tabPage10.Controls.Add(richTextBox3);
+            programmerModeControl1.tabPage10.Controls.Add(richTextBox3);
             richTextBox3.Text = @"chance=49.5 --sets your chance for placing a bet
 nextbet=0.00000100 --sets your first bet.
 bethigh=true --bet high when true, bet low when false
@@ -522,6 +527,10 @@ end";
             basicToolStripMenuItem.Checked = true;
             //chrtEmbeddedLiveChart.Series[0].Points.AddXY(0, 0);
             //chrtEmbeddedLiveChart.ChartAreas[0].AxisX.Minimum = 0;
+
+
+            AtachProgrammerObjects();
+            AddStatsComponents();
 
             #region tooltip Texts
             ToolTip tt = new ToolTip();
@@ -902,16 +911,20 @@ end";
             Lua.RegisterFunction("exportsim", this, new dPlayChing(ExportSim).Method);
             DumpLog("constructor done", 8);
         }
+
+
         void luaStop()
         {
             Stop("Lua stop command issued");
         }
 
         delegate bool dLoadStrat(string File);
+
         bool LuaLoadStrat(string File)
         {
             return load(File, false);
         }
+
         delegate object dGetInput(string prompt, int type);
         /*
             0= bool
@@ -919,7 +932,9 @@ end";
             2= decimal
             3= string
         */
+
         bool WaitForInput = false;
+
         object GetInputForLua(string prompt, int type)
         {
             WaitForInput = true;
@@ -936,6 +951,7 @@ end";
             2= decimal
             3= string
         */
+
         public object GetInputWithParams(string prompt, int type, string userinputext, string btncanceltext, string btnoktext)
         {
             WaitForInput = true;
@@ -1227,11 +1243,26 @@ end";
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+
+        private void UpdatePanels(Size size)
         {
+            if (pnlBasic.Visible)
+            {
 
-            testInputs();
+            }
+            else if (pnlAdvanced.Visible)
+            {
 
+            }
+            else if (pnlProgrammer.Visible)
+            {
+                programmerModeControl1.Width = size.Width;
+                programmerModeControl1.Height = size.Height;
+            }
+        }
+
+        private void UpdateSettingsPanelSizes()
+        {
             if (pnlBasic.Visible)
             {
                 scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
@@ -1244,10 +1275,17 @@ end";
             {
                 scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
             }
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+            testInputs();
+            UpdateSettingsPanelSizes();
+
 
             richTextBox3.BringToFront();
-            pnlControlProgrammer.SendToBack();
-            pnlLoadProgrammer.SendToBack();
+            programmerModeControl1.pnlControlProgrammer.SendToBack();
+            programmerModeControl1.pnlLoadProgrammer.SendToBack();
 
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             //AutoUpdater.Start("https://rbsoft.org/updates/AutoUpdaterTest.xml");
@@ -1902,7 +1940,7 @@ end";
                 if (CurrentSite.ChangeSeed)
                 {
 
-                    if(!string.IsNullOrEmpty(customClientSeed))
+                    if (!string.IsNullOrEmpty(customClientSeed))
                     {
                         CurrentSite.CustomSeed.IsCustom = true;
                         CurrentSite.CustomSeed.Value = customClientSeed;
@@ -1966,16 +2004,24 @@ end";
                 save();
 
                 stoponwin = false;
+
                 if (!programmerToolStripMenuItem.Checked)
-                { Chance = (decimal)nudChance.Value; }
+                {
+                    Chance = (decimal)nudChance.Value;
+                }
+
                 CurrentSite.chance = (Chance);
 
                 dtStarted = DateTime.Now;
             }
             if (testInputs())
             {
+
                 if (!programmerToolStripMenuItem.Checked && !Continue)
-                { Reset(); }
+                {
+                    Reset();
+                }
+
                 reset = false;
                 stop = false;
                 if (rdbLabEnable.Checked)
@@ -3186,16 +3232,16 @@ end";
             }
             else
             {
-                if (rtbConsole.Lines.Length > 1000)
+                if (programmerModeControl1.rtbConsole.Lines.Length > 1000)
                 {
-                    List<string> lines = new List<string>(rtbConsole.Lines);
+                    List<string> lines = new List<string>(programmerModeControl1.rtbConsole.Lines);
                     while (lines.Count > 950)
                     {
                         lines.RemoveAt(0);
                     }
-                    rtbConsole.Lines = lines.ToArray();
+                    programmerModeControl1.rtbConsole.Lines = lines.ToArray();
                 }
-                rtbConsole.AppendText(Message + "\r\n");
+                programmerModeControl1.rtbConsole.AppendText(Message + "\r\n");
             }
         }
         delegate void dWriteConsole(string Message);
@@ -3352,41 +3398,16 @@ end";
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            /*
-            if ((CurrentSite.AutoWithdraw || CurrentSite.Tip) && profit > 0)
-            {
-                if (donateMode == 1)
-                {
-
-                }
-                else if (donateMode == 2)
-                {
-                    DonateBox tmp = new DonateBox();
-                    if (tmp.ShowDialog(profit, CurrentSite.Currency, donatePercentage) == DialogResult.Yes)
-                    {
-                        if (Amount >= 0.00000001m)
-                        {
-                            CurrentSite.Donate(tmp.amount);
-                            Thread.Sleep(200);
-                        }
-                    }
-                    donateMode = (tmp.radioButton3.Checked ? 3 : tmp.radioButton2.Checked ? 1 : 2);
-                    donatePercentage = (decimal)tmp.numericUpDown1.Value;
-                }
-                else if (donateMode == 3)
-                {
-                    if (Amount >= 0.00000001m)
-                        CurrentSite.Donate((donatePercentage / 100.0m) * profit);
-                }
-            }
-            */
 
             Stop("");
+
             if (CurrentSite != null)
             {
                 CurrentSite.Disconnect();
             }
+
             save();
+
             Settings tmpSet = new DiceBot.Settings(this);
             tmpSet.loadsettings();
             tmpSet.nudDonatePercentage.Value = (decimal)donatePercentage;
@@ -4155,9 +4176,12 @@ end";
                     valid = true;
                 }
                 else
+                {
                     valid = false;
+                }
             }
             else if (valid)
+            {
                 if (d == System.Windows.Forms.DialogResult.Yes && valid)
                 {
                     valid = false;
@@ -4167,16 +4191,19 @@ end";
                         valid = true;
                     }
                     if (valid)
+                    {
                         if (ofdImport.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         {
                             load(ofdImport.FileName, false);
                         }
+                    }
                 }
                 else if (d == System.Windows.Forms.DialogResult.Cancel)
                 {
 
 
                 }
+            }
         }
 
         private void btnExport_Click(object sender, EventArgs e)
@@ -4184,7 +4211,6 @@ end";
             if (ofdExport.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 save(ofdExport.FileName);
-
             }
         }
         #endregion
@@ -4460,21 +4486,32 @@ end";
                     this.Hide();
                 }
             }
-            if (pnlBasic.Visible)
-            {
-                if ((scMain.Width - pnlBasic.Width) - 3 > 0)
-                    scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
-            }
-            else if (pnlAdvanced.Visible)
-            {
-                if ((scMain.Width - pnlAdvanced.Width) - 3 > 0)
-                    scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
-            }
-            else if (pnlProgrammer.Visible)
-            {
-                if ((scMain.Width - pnlProgrammer.Width) - 3 > 0)
-                    scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
-            }
+            //if (pnlBasic.Visible)
+            //{
+            //    if ((scMain.Width - pnlBasic.Width) - 3 > 0)
+            //    {
+            //        scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
+            //    }
+            //}
+            //else if (pnlAdvanced.Visible)
+            //{
+            //    if ((scMain.Width - pnlAdvanced.Width) - 3 > 0)
+            //    {
+            //        scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
+            //    }
+            //}
+            //else if (pnlProgrammer.Visible)
+            //{
+            //    if ((scMain.Width - pnlProgrammer.Width) - 3 > 0)
+            //    {
+            //        scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
+            //    }
+            //}
+
+            programmerModeControl1.Width = pnlProgrammer.Width;
+            programmerModeControl1.Height = pnlProgrammer.Height;
+
+            UpdateSettingsPanelSizes();
         }
 
         void menuitemclick(object sender, EventArgs e)
@@ -5547,6 +5584,8 @@ end";
             }
         }
 
+
+
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == 0 && e.RowIndex >= 0)
@@ -5609,9 +5648,7 @@ end";
             }
         }
 
-        //settings mode combobox
-        List<TabPage> Tabs = new List<TabPage>();
-        bool ViewedAdvanced = false;
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if ((sender as ToolStripMenuItem).Checked)
@@ -5620,25 +5657,29 @@ end";
                 {
                     pnlProgrammer.Visible = pnlAdvanced.Visible = false;
                     pnlBasic.Visible = true;
-                    scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
+                    //scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
                     if (ViewedAdvanced)
+                    {
                         MessageBox.Show("Please note: Settings set in the advanced mode are still be active.");
+                    }
                 }
                 else if ((sender as ToolStripMenuItem).Name == "advancedToolStripMenuItem")
                 {
                     ViewedAdvanced = true;
                     pnlAdvanced.Visible = true;
                     pnlProgrammer.Visible = pnlBasic.Visible = false;
-                    scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
+                    //scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
                 }
                 else if ((sender as ToolStripMenuItem).Name == "programmerToolStripMenuItem")
                 {
                     ViewedAdvanced = true;
                     pnlProgrammer.Visible = true;
                     pnlAdvanced.Visible = pnlBasic.Visible = false;
-                    scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
+                    //scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
 
                 }
+
+                UpdateSettingsPanelSizes();
             }
         }
 
@@ -6177,7 +6218,9 @@ end";
                 {
                     CurrentSiteDetails.SetDetails(CurrentSite);
                 }
+
                 CurrentSiteDetails.UpdateUserDetails(CurrentSite);
+
                 //Lua.clear();
                 Lua["balance"] = PreviousBalance;
                 Lua["profit"] = this.profit;
@@ -6208,6 +6251,7 @@ end";
                 WriteConsole(e.Message);
             }
         }
+
         void GetLuaVars()
         {
 
@@ -6234,7 +6278,10 @@ end";
                 DumpLog(e.StackTrace, 2);
             }
         }
+
         int LCindex = 0;
+        List<string> LastCommands = new List<string>();
+
         private void textBox1_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
 
@@ -6242,22 +6289,31 @@ end";
             {
 
                 SetLuaVars();
+
                 LCindex = 0;
-                LastCommands.Add(txtConsoleIn.Text);
+                LastCommands.Add(programmerModeControl1.txtConsoleIn.Text);
+
                 if (LastCommands.Count > 26)
-                { LastCommands.RemoveAt(0); }
-                WriteConsole(txtConsoleIn.Text);
-                if (txtConsoleIn.Text.ToLower() == "start()")
+                {
+                    LastCommands.RemoveAt(0);
+                }
+
+                WriteConsole(programmerModeControl1.txtConsoleIn.Text);
+
+                if (programmerModeControl1.txtConsoleIn.Text.ToLower() == "start()")
                 {
                     StartFromProgrammer();
                 }
-
+                else if (programmerModeControl1.txtConsoleIn.Text.ToLower() == "clear()")
+                {
+                    programmerModeControl1.rtbConsole.ResetText();
+                }
                 else
                 {
                     try
                     {
                         LuaRuntime.SetLua(Lua);
-                        LuaRuntime.Run(txtConsoleIn.Text);
+                        LuaRuntime.Run(programmerModeControl1.txtConsoleIn.Text);
                     }
                     catch (Exception ex)
                     {
@@ -6268,39 +6324,46 @@ end";
                     }
                 }
 
-                txtConsoleIn.Text = "";
+                programmerModeControl1.txtConsoleIn.Text = "";
                 GetLuaVars();
             }
             if (e.KeyCode == Keys.Up)
             {
                 if (LCindex < LastCommands.Count)
+                {
                     LCindex++;
+                }
                 if (LastCommands.Count > 0)
-                    txtConsoleIn.Text = LastCommands[LastCommands.Count - LCindex];
-
+                {
+                    programmerModeControl1.txtConsoleIn.Text = LastCommands[LastCommands.Count - LCindex];
+                }
             }
             if (e.KeyCode == Keys.Down)
             {
                 if (LCindex > 0)
+                {
                     LCindex--;
+                }
                 if (LCindex <= 0)
                 {
-                    txtConsoleIn.Text = "";
+                    programmerModeControl1.txtConsoleIn.Text = "";
                 }
                 else if (LastCommands.Count > 0)
-                    txtConsoleIn.Text = LastCommands[LastCommands.Count - LCindex];
-
+                {
+                    programmerModeControl1.txtConsoleIn.Text = LastCommands[LastCommands.Count - LCindex];
+                }
 
             }
         }
-        List<string> LastCommands = new List<string>();
+
         private void txtConsoleIn_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                txtConsoleIn.Text = "";
+                programmerModeControl1.txtConsoleIn.Text = "";
             }
         }
+
         void StartFromProgrammer()
         {
             LuaRuntime.SetLua(Lua);
@@ -6322,12 +6385,12 @@ end";
         }
         private void button3_Click_1(object sender, EventArgs e)
         {
-            Process.Start("http://bot.seuntjie.com/ProgrammerMode.html");
+            //Process.Start("http://bot.seuntjie.com/ProgrammerMode.html");
         }
 
         private void sourceCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start("http://github.com/seuntie900/DiceBot");
+            //Process.Start("http://github.com/seuntie900/DiceBot");
         }
 
         private void donateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6443,6 +6506,21 @@ end";
             Process.Start("http://bot.seuntjie.com/presetlist.html");
         }
 
+        #region -- PROGRAMMER MODE --
+
+        private void AtachProgrammerObjects()
+        {
+
+            programmerModeControl1.btnOpenCode.Click += btnOpenCode_Click;
+            programmerModeControl1.btnCodeSave.Click += btnCodeSave_Click;
+            programmerModeControl1.btnStartProgrammer.Click += btnStartProgrammer_Click;
+            programmerModeControl1.btnStopProgrammer.Click += btnStopProgrammer_Click;
+
+            programmerModeControl1.btnPauseResumeProgrammer.Click += btnPauseResumeProgrammer_Click;
+            programmerModeControl1.btnStopNextWinProgrammer.Click += btnStopNextWinProgrammer_Click;
+
+        }
+
         private void btnOpenCode_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofdtmp = new OpenFileDialog();
@@ -6483,6 +6561,37 @@ end";
                 }
             }
         }
+
+        private void btnStopProgrammer_Click(object sender, EventArgs e)
+        {
+            Stop("Stop Button clicked");
+        }
+
+        private void btnStartProgrammer_Click(object sender, EventArgs e)
+        {
+            StartFromProgrammer();
+        }
+
+        private void btnStopNextWinProgrammer_Click(object sender, EventArgs e)
+        {
+            stoponwin = true;
+        }
+
+        private void btnPauseResumeProgrammer_Click(object sender, EventArgs e)
+        {
+            if (programmerModeControl1.btnPauseResumeProgrammer.Text == "Pause")
+            {
+                Stop("Pause Button clicked");
+                programmerModeControl1.btnPauseResumeProgrammer.Text = "Resume";
+            }
+            else
+            {
+                Start(true);
+                programmerModeControl1.btnPauseResumeProgrammer.Text = "Pause";
+            }
+        }
+
+        #endregion
 
 
         object getValue(string key, bool Private)
@@ -6804,9 +6913,13 @@ end";
                     }
                 }
                 else if (c is TextBox)
+                {
                     (c as TextBox).Text = value;
+                }
                 else if (c is NumericUpDown)
+                {
                     (c as NumericUpDown).Value = Convert.ToDecimal(value);
+                }
                 else if (c is RadioButton)
                 {
                     if (Key == "MultiplierMode")
@@ -6891,9 +7004,13 @@ end";
 
                 }
                 else if (c is CheckBox)
+                {
                     (c as CheckBox).Checked = value == "1" || value == "True";
+                }
                 else if (c is RichTextBox)
+                {
                     (c as RichTextBox).Lines = value.Split('?');
+                }
 
             }
         }
@@ -6903,7 +7020,9 @@ end";
             {
                 Control c = !Private ? SaveNames[Key] : PSaveNames[Key];
                 if (c is NumericUpDown)
+                {
                     (c as NumericUpDown).Value = Convert.ToDecimal(value);
+                }
             }
         }
         void SetValue(string Key, bool value, bool Private)
@@ -6912,7 +7031,9 @@ end";
             {
                 Control c = !Private ? SaveNames[Key] : PSaveNames[Key];
                 if (c is CheckBox)
+                {
                     (c as CheckBox).Checked = value;
+                }
             }
         }
 
@@ -7133,6 +7254,7 @@ end";
         }
 
         int LogLevel = 0;
+
         public void DumpLog(string Message, int Level)
         {
             if (Message != null)
@@ -7167,12 +7289,27 @@ end";
         private void popupToolStripMenuItem_Click(object sender, EventArgs e)
         {
             embeddedToolStripMenuItem.Checked = false;
+
             if (StatsForm.IsDisposed)
+            {
                 StatsForm = new StatsForm();
+            }
+
             StatsWindows.Parent = StatsForm;
             StatsWindows.ShowHideButtons = true;
             StatsForm.AddStatsWindow(StatsWindows);
             StatsForm.Show();
+        }
+
+
+        private void AddStatsComponents()
+        {
+            panel5.Controls.Add(StatsWindows);
+            StatsWindows.Dock = DockStyle.Left;
+            StatsWindows.SendToBack();
+            groupBox3.SendToBack();
+            StatsWindows.ShowHideButtons = false;
+            panel5.Height = 270;
         }
 
         private void embeddedToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
@@ -7202,8 +7339,6 @@ end";
                 }
                 panel5.Height = 189;
             }
-
-
         }
 
         private void embeddedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -7211,42 +7346,28 @@ end";
 
         }
 
-        private void btnStopProgrammer_Click(object sender, EventArgs e)
-        {
-            Stop("Stop Button clicked");
-        }
-
-        private void btnStartProgrammer_Click(object sender, EventArgs e)
-        {
-            StartFromProgrammer();
-        }
-
-        private void richTextBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void numericUpDown1_ValueChanged_1(object sender, EventArgs e)
         {
             if (nudMultiplier.Value != (nudPercIncreaseLoss.Value + 100m) / 100m)
+            {
                 nudMultiplier.Value = (nudPercIncreaseLoss.Value + 100m) / 100m;
-        }
-
-        private void nudMultiplier_VisibleChanged(object sender, EventArgs e)
-        {
-
+            }
         }
 
         private void nudPercIncreaseWin_ValueChanged(object sender, EventArgs e)
         {
             if (nudWinMultiplier.Value != (nudPercIncreaseWin.Value + 100m) / 100m)
+            {
                 nudWinMultiplier.Value = (nudPercIncreaseWin.Value + 100m) / 100m;
+            }
         }
 
         private void nudPayout_ValueChanged(object sender, EventArgs e)
         {
             if (nudChance.Value != (100 - CurrentSite.edge) / nudPayout.Value)
+            {
                 nudChance.Value = (100 - CurrentSite.edge) / nudPayout.Value;
+            }
         }
 
         private void btnResume_Click(object sender, EventArgs e)
@@ -7278,6 +7399,15 @@ end";
         private void label37_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void scMain_Panel2_Resize(object sender, EventArgs e)
+        {
+
+            //var _a = scMain.Panel1;
+            //var _b = scMain.Panel2;
+
+            UpdatePanels(scMain.Panel2.ClientSize);
         }
 
         private void seedsToolStripMenuItem_Click(object sender, EventArgs e)

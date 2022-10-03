@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DiceBot")]
+[assembly: AssemblyTitle("DICEBot")]
 [assembly: AssemblyDescription("Automatic and flexible Betting bot for all the big dice sites")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Botma Software (Pty) Ltd")]
+[assembly: AssemblyCompany("WinMachine | Botma Software (Pty) Ltd")]
 [assembly: AssemblyProduct("DiceBot")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("Copyright ©  2013 - 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.2.0.0")]
-[assembly: AssemblyFileVersion("4.2.0.0")]
+[assembly: AssemblyVersion("4.2.1.0")]
+[assembly: AssemblyFileVersion("4.2.1.0")]

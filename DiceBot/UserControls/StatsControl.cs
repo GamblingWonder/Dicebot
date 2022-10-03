@@ -16,7 +16,17 @@ namespace DiceBot
             InitializeComponent();
         }
 
-        public bool ShowHideButtons { get { return btnHideStats.Visible; } set { btnHideStats.Visible = button2.Visible = value; } }
+        public bool ShowHideButtons
+        {
+            get
+            {
+                return btnHideStats.Visible;
+            }
+            set
+            {
+                btnHideStats.Visible = button2.Visible = value;
+            }
+        }
 
         private void btnResetStats_Click(object sender, EventArgs e)
         {
