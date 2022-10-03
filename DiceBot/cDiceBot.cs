@@ -525,6 +525,7 @@ end";
 
 
             AtachProgrammerObjects();
+            AddStatsComponents();
 
             #region tooltip Texts
             ToolTip tt = new ToolTip();
@@ -5551,6 +5552,8 @@ end";
             }
         }
 
+
+
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == 0 && e.RowIndex >= 0)
@@ -5626,7 +5629,9 @@ end";
                     pnlBasic.Visible = true;
                     scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
                     if (ViewedAdvanced)
+                    {
                         MessageBox.Show("Please note: Settings set in the advanced mode are still be active.");
+                    }
                 }
                 else if ((sender as ToolStripMenuItem).Name == "advancedToolStripMenuItem")
                 {
@@ -6269,7 +6274,7 @@ end";
                 }
                 else if (programmerModeControl1.txtConsoleIn.Text.ToLower() == "clear()")
                 {
-                    programmerModeControl1.rtbConsole.ResetText();                        
+                    programmerModeControl1.rtbConsole.ResetText();
                 }
                 else
                 {
@@ -6318,7 +6323,7 @@ end";
 
             }
         }
-       
+
         private void txtConsoleIn_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -6537,7 +6542,7 @@ end";
 
         private void btnStopNextWinProgrammer_Click(object sender, EventArgs e)
         {
-            // StartFromProgrammer();
+            stoponwin = true;
         }
 
         private void btnPauseResumeProgrammer_Click(object sender, EventArgs e)
@@ -6876,9 +6881,13 @@ end";
                     }
                 }
                 else if (c is TextBox)
+                {
                     (c as TextBox).Text = value;
+                }
                 else if (c is NumericUpDown)
+                {
                     (c as NumericUpDown).Value = Convert.ToDecimal(value);
+                }
                 else if (c is RadioButton)
                 {
                     if (Key == "MultiplierMode")
@@ -6963,9 +6972,13 @@ end";
 
                 }
                 else if (c is CheckBox)
+                {
                     (c as CheckBox).Checked = value == "1" || value == "True";
+                }
                 else if (c is RichTextBox)
+                {
                     (c as RichTextBox).Lines = value.Split('?');
+                }
 
             }
         }
@@ -6975,7 +6988,9 @@ end";
             {
                 Control c = !Private ? SaveNames[Key] : PSaveNames[Key];
                 if (c is NumericUpDown)
+                {
                     (c as NumericUpDown).Value = Convert.ToDecimal(value);
+                }
             }
         }
         void SetValue(string Key, bool value, bool Private)
@@ -6984,7 +6999,9 @@ end";
             {
                 Control c = !Private ? SaveNames[Key] : PSaveNames[Key];
                 if (c is CheckBox)
+                {
                     (c as CheckBox).Checked = value;
+                }
             }
         }
 
@@ -7250,6 +7267,17 @@ end";
             StatsWindows.ShowHideButtons = true;
             StatsForm.AddStatsWindow(StatsWindows);
             StatsForm.Show();
+        }
+
+
+        private void AddStatsComponents()
+        {
+            panel5.Controls.Add(StatsWindows);
+            StatsWindows.Dock = DockStyle.Left;
+            StatsWindows.SendToBack();
+            groupBox3.SendToBack();
+            StatsWindows.ShowHideButtons = false;
+            panel5.Height = 270;
         }
 
         private void embeddedToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
