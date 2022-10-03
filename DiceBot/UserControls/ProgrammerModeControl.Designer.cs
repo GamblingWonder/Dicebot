@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pnlProgrammer = new System.Windows.Forms.Panel();
+            this.pnlProgrammerX = new System.Windows.Forms.Panel();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage10 = new System.Windows.Forms.TabPage();
             this.pnlLoadProgrammer = new System.Windows.Forms.Panel();
@@ -43,11 +43,11 @@
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.pnlControlProgrammer = new System.Windows.Forms.Panel();
+            this.btnStopNextWinProgrammer = new System.Windows.Forms.Button();
+            this.btnPauseResumeProgrammer = new System.Windows.Forms.Button();
             this.btnStopProgrammer = new System.Windows.Forms.Button();
             this.btnStartProgrammer = new System.Windows.Forms.Button();
-            this.btnPauseResumeProgrammer = new System.Windows.Forms.Button();
-            this.btnStopNextWinProgrammer = new System.Windows.Forms.Button();
-            this.pnlProgrammer.SuspendLayout();
+            this.pnlProgrammerX.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage10.SuspendLayout();
             this.pnlLoadProgrammer.SuspendLayout();
@@ -57,20 +57,20 @@
             this.pnlControlProgrammer.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlProgrammer
+            // pnlProgrammerX
             // 
-            this.pnlProgrammer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.pnlProgrammerX.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlProgrammer.AutoScroll = true;
-            this.pnlProgrammer.BackColor = System.Drawing.Color.Gray;
-            this.pnlProgrammer.Controls.Add(this.tabControl2);
-            this.pnlProgrammer.Controls.Add(this.pnlControlProgrammer);
-            this.pnlProgrammer.Location = new System.Drawing.Point(0, 0);
-            this.pnlProgrammer.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlProgrammer.Name = "pnlProgrammer";
-            this.pnlProgrammer.Size = new System.Drawing.Size(612, 470);
-            this.pnlProgrammer.TabIndex = 10;
+            this.pnlProgrammerX.AutoScroll = true;
+            this.pnlProgrammerX.BackColor = System.Drawing.Color.Gray;
+            this.pnlProgrammerX.Controls.Add(this.tabControl2);
+            this.pnlProgrammerX.Controls.Add(this.pnlControlProgrammer);
+            this.pnlProgrammerX.Location = new System.Drawing.Point(0, 0);
+            this.pnlProgrammerX.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlProgrammerX.Name = "pnlProgrammerX";
+            this.pnlProgrammerX.Size = new System.Drawing.Size(200, 100);
+            this.pnlProgrammerX.TabIndex = 10;
             // 
             // tabControl2
             // 
@@ -82,7 +82,7 @@
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(612, 435);
+            this.tabControl2.Size = new System.Drawing.Size(200, 65);
             this.tabControl2.TabIndex = 0;
             // 
             // tabPage10
@@ -92,7 +92,7 @@
             this.tabPage10.Location = new System.Drawing.Point(4, 22);
             this.tabPage10.Name = "tabPage10";
             this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage10.Size = new System.Drawing.Size(604, 409);
+            this.tabPage10.Size = new System.Drawing.Size(192, 39);
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Code";
             this.tabPage10.UseVisualStyleBackColor = true;
@@ -105,7 +105,7 @@
             this.pnlLoadProgrammer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlLoadProgrammer.Location = new System.Drawing.Point(3, 3);
             this.pnlLoadProgrammer.Name = "pnlLoadProgrammer";
-            this.pnlLoadProgrammer.Size = new System.Drawing.Size(598, 34);
+            this.pnlLoadProgrammer.Size = new System.Drawing.Size(186, 34);
             this.pnlLoadProgrammer.TabIndex = 10;
             // 
             // btnOpenCode
@@ -120,7 +120,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(513, 5);
+            this.button3.Location = new System.Drawing.Point(101, 5);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 8;
@@ -266,10 +266,31 @@
             this.pnlControlProgrammer.Controls.Add(this.btnStopProgrammer);
             this.pnlControlProgrammer.Controls.Add(this.btnStartProgrammer);
             this.pnlControlProgrammer.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlControlProgrammer.Location = new System.Drawing.Point(0, 435);
+            this.pnlControlProgrammer.Location = new System.Drawing.Point(0, 65);
             this.pnlControlProgrammer.Name = "pnlControlProgrammer";
-            this.pnlControlProgrammer.Size = new System.Drawing.Size(612, 35);
+            this.pnlControlProgrammer.Size = new System.Drawing.Size(200, 35);
             this.pnlControlProgrammer.TabIndex = 1;
+            // 
+            // btnStopNextWinProgrammer
+            // 
+            this.btnStopNextWinProgrammer.Enabled = false;
+            this.btnStopNextWinProgrammer.Location = new System.Drawing.Point(376, 7);
+            this.btnStopNextWinProgrammer.Name = "btnStopNextWinProgrammer";
+            this.btnStopNextWinProgrammer.Size = new System.Drawing.Size(112, 23);
+            this.btnStopNextWinProgrammer.TabIndex = 3;
+            this.btnStopNextWinProgrammer.Text = "Stop on Next Win";
+            this.btnStopNextWinProgrammer.UseVisualStyleBackColor = true;
+            // 
+            // btnPauseResumeProgrammer
+            // 
+            this.btnPauseResumeProgrammer.BackColor = System.Drawing.SystemColors.Control;
+            this.btnPauseResumeProgrammer.Enabled = false;
+            this.btnPauseResumeProgrammer.Location = new System.Drawing.Point(252, 7);
+            this.btnPauseResumeProgrammer.Name = "btnPauseResumeProgrammer";
+            this.btnPauseResumeProgrammer.Size = new System.Drawing.Size(112, 23);
+            this.btnPauseResumeProgrammer.TabIndex = 2;
+            this.btnPauseResumeProgrammer.Text = "Pause";
+            this.btnPauseResumeProgrammer.UseVisualStyleBackColor = false;
             // 
             // btnStopProgrammer
             // 
@@ -289,33 +310,15 @@
             this.btnStartProgrammer.Text = "Start";
             this.btnStartProgrammer.UseVisualStyleBackColor = true;
             // 
-            // btnPauseResumeProgrammer
-            // 
-            this.btnPauseResumeProgrammer.BackColor = System.Drawing.SystemColors.Control;
-            this.btnPauseResumeProgrammer.Location = new System.Drawing.Point(252, 7);
-            this.btnPauseResumeProgrammer.Name = "btnPauseResumeProgrammer";
-            this.btnPauseResumeProgrammer.Size = new System.Drawing.Size(112, 23);
-            this.btnPauseResumeProgrammer.TabIndex = 2;
-            this.btnPauseResumeProgrammer.Text = "Pause";
-            this.btnPauseResumeProgrammer.UseVisualStyleBackColor = false;
-            // 
-            // btnStopNextWinProgrammer
-            // 
-            this.btnStopNextWinProgrammer.Location = new System.Drawing.Point(376, 7);
-            this.btnStopNextWinProgrammer.Name = "btnStopNextWinProgrammer";
-            this.btnStopNextWinProgrammer.Size = new System.Drawing.Size(112, 23);
-            this.btnStopNextWinProgrammer.TabIndex = 3;
-            this.btnStopNextWinProgrammer.Text = "Stop on Next Win";
-            this.btnStopNextWinProgrammer.UseVisualStyleBackColor = true;
-            // 
             // ProgrammerModeControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.pnlProgrammer);
+            this.Controls.Add(this.pnlProgrammerX);
             this.Name = "ProgrammerModeControl";
             this.Size = new System.Drawing.Size(615, 473);
-            this.pnlProgrammer.ResumeLayout(false);
+            this.Resize += new System.EventHandler(this.ProgrammerModeControl_Resize);
+            this.pnlProgrammerX.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabPage10.ResumeLayout(false);
             this.pnlLoadProgrammer.ResumeLayout(false);
@@ -333,7 +336,7 @@
         private System.Windows.Forms.TabPage tpConsole;
         private System.Windows.Forms.TabPage tabPage8;
         private System.Windows.Forms.TabPage tabPage9;
-        public System.Windows.Forms.Panel pnlProgrammer;
+        public System.Windows.Forms.Panel pnlProgrammerX;
         public System.Windows.Forms.Panel pnlControlProgrammer;
         public System.Windows.Forms.TabPage tabPage10;
         public System.Windows.Forms.RichTextBox rtbConsole;

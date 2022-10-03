@@ -664,6 +664,7 @@
             this.pnlAdvanced.Name = "pnlAdvanced";
             this.pnlAdvanced.Size = new System.Drawing.Size(475, 525);
             this.pnlAdvanced.TabIndex = 2;
+            this.pnlAdvanced.Visible = false;
             // 
             // tcSettings
             // 
@@ -5466,6 +5467,7 @@
             this.pnlBasic.Name = "pnlBasic";
             this.pnlBasic.Size = new System.Drawing.Size(149, 525);
             this.pnlBasic.TabIndex = 8;
+            this.pnlBasic.Visible = false;
             this.pnlBasic.Paint += new System.Windows.Forms.PaintEventHandler(this.panel8_Paint);
             // 
             // nudChance2
@@ -5755,6 +5757,7 @@
             this.scMain.Panel2.Controls.Add(this.pnlBasic);
             this.scMain.Panel2.Controls.Add(this.pnlProgrammer);
             this.scMain.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer2_Panel2_Paint);
+            this.scMain.Panel2.Resize += new System.EventHandler(this.scMain_Panel2_Resize);
             this.scMain.Size = new System.Drawing.Size(1924, 527);
             this.scMain.SplitterDistance = 1050;
             this.scMain.TabIndex = 9;
@@ -5766,11 +5769,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlProgrammer.AutoScroll = true;
             this.pnlProgrammer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlProgrammer.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.pnlProgrammer.Controls.Add(this.programmerModeControl1);
             this.pnlProgrammer.Location = new System.Drawing.Point(0, 0);
             this.pnlProgrammer.MinimumSize = new System.Drawing.Size(550, 100);
             this.pnlProgrammer.Name = "pnlProgrammer";
-            this.pnlProgrammer.Size = new System.Drawing.Size(550, 525);
+            this.pnlProgrammer.Size = new System.Drawing.Size(865, 525);
             this.pnlProgrammer.TabIndex = 9;
             // 
             // menuStrip1
@@ -6370,7 +6374,7 @@
             this.programmerModeControl1.Location = new System.Drawing.Point(0, 3);
             this.programmerModeControl1.Margin = new System.Windows.Forms.Padding(0);
             this.programmerModeControl1.Name = "programmerModeControl1";
-            this.programmerModeControl1.Size = new System.Drawing.Size(405, 522);
+            this.programmerModeControl1.Size = new System.Drawing.Size(720, 522);
             this.programmerModeControl1.TabIndex = 0;
             // 
             // cDiceBot

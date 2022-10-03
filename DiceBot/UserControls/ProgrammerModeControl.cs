@@ -22,5 +22,10 @@ namespace DiceBot.UserControls
 
         }
 
+        private void ProgrammerModeControl_Resize(object sender, EventArgs e)
+        {
+            this.pnlProgrammerX.Width = this.Width;
+            this.pnlProgrammerX.Height = this.Height;
+        }
     }
 }

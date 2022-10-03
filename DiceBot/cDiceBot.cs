@@ -1244,6 +1244,22 @@ end";
         }
 
 
+        private void UpdatePanels(Size size)
+        {
+            if (pnlBasic.Visible)
+            {
+
+            }
+            else if (pnlAdvanced.Visible)
+            {
+
+            }
+            else if (pnlProgrammer.Visible)
+            {
+                programmerModeControl1.Width = size.Width;
+                programmerModeControl1.Height = size.Height;
+            }
+        }
 
         private void UpdateSettingsPanelSizes()
         {
@@ -4491,6 +4507,10 @@ end";
             //        scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
             //    }
             //}
+
+            programmerModeControl1.Width = pnlProgrammer.Width;
+            programmerModeControl1.Height = pnlProgrammer.Height;
+
             UpdateSettingsPanelSizes();
         }
 
@@ -7379,6 +7399,15 @@ end";
         private void label37_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void scMain_Panel2_Resize(object sender, EventArgs e)
+        {
+
+            //var _a = scMain.Panel1;
+            //var _b = scMain.Panel2;
+
+            UpdatePanels(scMain.Panel2.ClientSize);
         }
 
         private void seedsToolStripMenuItem_Click(object sender, EventArgs e)
