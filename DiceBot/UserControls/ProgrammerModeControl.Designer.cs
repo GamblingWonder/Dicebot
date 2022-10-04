@@ -59,17 +59,15 @@
             // 
             // pnlProgrammerX
             // 
-            this.pnlProgrammerX.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlProgrammerX.AutoScroll = true;
-            this.pnlProgrammerX.BackColor = System.Drawing.Color.Gray;
+            this.pnlProgrammerX.BackColor = System.Drawing.SystemColors.Control;
             this.pnlProgrammerX.Controls.Add(this.tabControl2);
             this.pnlProgrammerX.Controls.Add(this.pnlControlProgrammer);
+            this.pnlProgrammerX.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlProgrammerX.Location = new System.Drawing.Point(0, 0);
             this.pnlProgrammerX.Margin = new System.Windows.Forms.Padding(0);
             this.pnlProgrammerX.Name = "pnlProgrammerX";
-            this.pnlProgrammerX.Size = new System.Drawing.Size(200, 100);
+            this.pnlProgrammerX.Size = new System.Drawing.Size(615, 473);
             this.pnlProgrammerX.TabIndex = 10;
             // 
             // tabControl2
@@ -82,7 +80,7 @@
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(200, 65);
+            this.tabControl2.Size = new System.Drawing.Size(615, 438);
             this.tabControl2.TabIndex = 0;
             // 
             // tabPage10
@@ -90,9 +88,9 @@
             this.tabPage10.AutoScroll = true;
             this.tabPage10.Controls.Add(this.pnlLoadProgrammer);
             this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Margin = new System.Windows.Forms.Padding(0);
             this.tabPage10.Name = "tabPage10";
-            this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage10.Size = new System.Drawing.Size(192, 39);
+            this.tabPage10.Size = new System.Drawing.Size(607, 412);
             this.tabPage10.TabIndex = 0;
             this.tabPage10.Text = "Code";
             this.tabPage10.UseVisualStyleBackColor = true;
@@ -103,9 +101,9 @@
             this.pnlLoadProgrammer.Controls.Add(this.button3);
             this.pnlLoadProgrammer.Controls.Add(this.btnCodeSave);
             this.pnlLoadProgrammer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlLoadProgrammer.Location = new System.Drawing.Point(3, 3);
+            this.pnlLoadProgrammer.Location = new System.Drawing.Point(0, 0);
             this.pnlLoadProgrammer.Name = "pnlLoadProgrammer";
-            this.pnlLoadProgrammer.Size = new System.Drawing.Size(186, 34);
+            this.pnlLoadProgrammer.Size = new System.Drawing.Size(607, 34);
             this.pnlLoadProgrammer.TabIndex = 10;
             // 
             // btnOpenCode
@@ -120,7 +118,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(101, 5);
+            this.button3.Location = new System.Drawing.Point(522, 5);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 8;
@@ -144,29 +142,31 @@
             this.tpConsole.Location = new System.Drawing.Point(4, 22);
             this.tpConsole.Name = "tpConsole";
             this.tpConsole.Padding = new System.Windows.Forms.Padding(3);
-            this.tpConsole.Size = new System.Drawing.Size(604, 409);
+            this.tpConsole.Size = new System.Drawing.Size(607, 412);
             this.tpConsole.TabIndex = 1;
             this.tpConsole.Text = "Console";
             this.tpConsole.UseVisualStyleBackColor = true;
             // 
             // rtbConsole
             // 
+            this.rtbConsole.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.rtbConsole.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbConsole.HideSelection = false;
             this.rtbConsole.Location = new System.Drawing.Point(3, 3);
+            this.rtbConsole.Margin = new System.Windows.Forms.Padding(0);
             this.rtbConsole.Name = "rtbConsole";
             this.rtbConsole.ReadOnly = true;
-            this.rtbConsole.Size = new System.Drawing.Size(598, 334);
+            this.rtbConsole.Size = new System.Drawing.Size(601, 337);
             this.rtbConsole.TabIndex = 0;
             this.rtbConsole.Text = "";
             // 
             // txtConsoleIn
             // 
             this.txtConsoleIn.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.txtConsoleIn.Location = new System.Drawing.Point(3, 337);
+            this.txtConsoleIn.Location = new System.Drawing.Point(3, 340);
             this.txtConsoleIn.Multiline = true;
             this.txtConsoleIn.Name = "txtConsoleIn";
-            this.txtConsoleIn.Size = new System.Drawing.Size(598, 69);
+            this.txtConsoleIn.Size = new System.Drawing.Size(601, 69);
             this.txtConsoleIn.TabIndex = 1;
             // 
             // tabPage8
@@ -175,7 +175,7 @@
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(604, 409);
+            this.tabPage8.Size = new System.Drawing.Size(607, 412);
             this.tabPage8.TabIndex = 2;
             this.tabPage8.Text = "Variables";
             this.tabPage8.UseVisualStyleBackColor = true;
@@ -205,7 +205,7 @@
             "site:SiteDetails, RO"});
             this.lbVariables.Location = new System.Drawing.Point(3, 3);
             this.lbVariables.Name = "lbVariables";
-            this.lbVariables.Size = new System.Drawing.Size(598, 403);
+            this.lbVariables.Size = new System.Drawing.Size(601, 406);
             this.lbVariables.TabIndex = 3;
             // 
             // tabPage9
@@ -214,7 +214,7 @@
             this.tabPage9.Location = new System.Drawing.Point(4, 22);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage9.Size = new System.Drawing.Size(604, 409);
+            this.tabPage9.Size = new System.Drawing.Size(607, 412);
             this.tabPage9.TabIndex = 3;
             this.tabPage9.Text = "Functions/Methods";
             this.tabPage9.UseVisualStyleBackColor = true;
@@ -256,30 +256,32 @@
             "exportsim():void"});
             this.listBox1.Location = new System.Drawing.Point(3, 3);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(598, 403);
+            this.listBox1.Size = new System.Drawing.Size(601, 406);
             this.listBox1.TabIndex = 8;
             // 
             // pnlControlProgrammer
             // 
+            this.pnlControlProgrammer.BackColor = System.Drawing.SystemColors.Control;
             this.pnlControlProgrammer.Controls.Add(this.btnStopNextWinProgrammer);
             this.pnlControlProgrammer.Controls.Add(this.btnPauseResumeProgrammer);
             this.pnlControlProgrammer.Controls.Add(this.btnStopProgrammer);
             this.pnlControlProgrammer.Controls.Add(this.btnStartProgrammer);
             this.pnlControlProgrammer.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlControlProgrammer.Location = new System.Drawing.Point(0, 65);
+            this.pnlControlProgrammer.Location = new System.Drawing.Point(0, 438);
             this.pnlControlProgrammer.Name = "pnlControlProgrammer";
-            this.pnlControlProgrammer.Size = new System.Drawing.Size(200, 35);
+            this.pnlControlProgrammer.Size = new System.Drawing.Size(615, 35);
             this.pnlControlProgrammer.TabIndex = 1;
             // 
             // btnStopNextWinProgrammer
             // 
+            this.btnStopNextWinProgrammer.BackColor = System.Drawing.SystemColors.Control;
             this.btnStopNextWinProgrammer.Enabled = false;
             this.btnStopNextWinProgrammer.Location = new System.Drawing.Point(376, 7);
             this.btnStopNextWinProgrammer.Name = "btnStopNextWinProgrammer";
             this.btnStopNextWinProgrammer.Size = new System.Drawing.Size(112, 23);
             this.btnStopNextWinProgrammer.TabIndex = 3;
             this.btnStopNextWinProgrammer.Text = "Stop on Next Win";
-            this.btnStopNextWinProgrammer.UseVisualStyleBackColor = true;
+            this.btnStopNextWinProgrammer.UseVisualStyleBackColor = false;
             // 
             // btnPauseResumeProgrammer
             // 
@@ -294,21 +296,23 @@
             // 
             // btnStopProgrammer
             // 
+            this.btnStopProgrammer.BackColor = System.Drawing.SystemColors.Control;
             this.btnStopProgrammer.Location = new System.Drawing.Point(128, 7);
             this.btnStopProgrammer.Name = "btnStopProgrammer";
             this.btnStopProgrammer.Size = new System.Drawing.Size(112, 23);
             this.btnStopProgrammer.TabIndex = 1;
             this.btnStopProgrammer.Text = "Stop";
-            this.btnStopProgrammer.UseVisualStyleBackColor = true;
+            this.btnStopProgrammer.UseVisualStyleBackColor = false;
             // 
             // btnStartProgrammer
             // 
+            this.btnStartProgrammer.BackColor = System.Drawing.SystemColors.Control;
             this.btnStartProgrammer.Location = new System.Drawing.Point(4, 7);
             this.btnStartProgrammer.Name = "btnStartProgrammer";
             this.btnStartProgrammer.Size = new System.Drawing.Size(112, 23);
             this.btnStartProgrammer.TabIndex = 0;
             this.btnStartProgrammer.Text = "Start";
-            this.btnStartProgrammer.UseVisualStyleBackColor = true;
+            this.btnStartProgrammer.UseVisualStyleBackColor = false;
             // 
             // ProgrammerModeControl
             // 

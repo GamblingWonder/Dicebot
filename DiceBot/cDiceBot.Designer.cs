@@ -436,6 +436,7 @@
             this.tmrMissingSeeds = new System.Windows.Forms.Timer(this.components);
             this.scMain = new System.Windows.Forms.SplitContainer();
             this.pnlProgrammer = new System.Windows.Forms.Panel();
+            this.programmerModeControl1 = new DiceBot.UserControls.ProgrammerModeControl();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -506,7 +507,6 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.betBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.programmerModeControl1 = new DiceBot.UserControls.ProgrammerModeControl();
             this.pnlAdvanced.SuspendLayout();
             this.tcSettings.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -5777,6 +5777,16 @@
             this.pnlProgrammer.Size = new System.Drawing.Size(865, 525);
             this.pnlProgrammer.TabIndex = 9;
             // 
+            // programmerModeControl1
+            // 
+            this.programmerModeControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.programmerModeControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.programmerModeControl1.Location = new System.Drawing.Point(0, 0);
+            this.programmerModeControl1.Margin = new System.Windows.Forms.Padding(0);
+            this.programmerModeControl1.Name = "programmerModeControl1";
+            this.programmerModeControl1.Size = new System.Drawing.Size(865, 525);
+            this.programmerModeControl1.TabIndex = 0;
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -6364,18 +6374,6 @@
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(79, 17);
             this.lblStatus.Text = "Disconnected";
-            // 
-            // programmerModeControl1
-            // 
-            this.programmerModeControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.programmerModeControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.programmerModeControl1.Location = new System.Drawing.Point(0, 3);
-            this.programmerModeControl1.Margin = new System.Windows.Forms.Padding(0);
-            this.programmerModeControl1.Name = "programmerModeControl1";
-            this.programmerModeControl1.Size = new System.Drawing.Size(720, 522);
-            this.programmerModeControl1.TabIndex = 0;
             // 
             // cDiceBot
             // 

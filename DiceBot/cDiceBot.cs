@@ -4508,8 +4508,8 @@ end";
             //    }
             //}
 
-            programmerModeControl1.Width = pnlProgrammer.Width;
-            programmerModeControl1.Height = pnlProgrammer.Height;
+            //programmerModeControl1.Width = pnlProgrammer.Width;
+            //programmerModeControl1.Height = pnlProgrammer.Height;
 
             UpdateSettingsPanelSizes();
         }
@@ -7407,7 +7407,7 @@ end";
             //var _a = scMain.Panel1;
             //var _b = scMain.Panel2;
 
-            UpdatePanels(scMain.Panel2.ClientSize);
+            //UpdatePanels(scMain.Panel2.ClientSize);
         }
 
         private void seedsToolStripMenuItem_Click(object sender, EventArgs e)
