@@ -97,10 +97,12 @@ namespace DiceBot
             }
         }
 
-        Control[] ControlsToDisable;
 
         DateTime OpenTime = DateTime.Now;
         Random r = new Random();
+
+
+        Control[] ControlsToDisable;
         Graph LiveGraph;
         StatsControl StatsWindows = new StatsControl();
         StatsForm StatsForm = new StatsForm();
@@ -232,9 +234,8 @@ namespace DiceBot
 
         private void Currentsite_OnRequireCaptcha(object sender, RequireCaptchaEventArgs e)
         {
-            //ShowCaptcha tmp = new ShowCaptcha(e);
+            // ShowCaptcha tmp = new ShowCaptcha(e);
             // tmp.ShowDialog();
-
         }
 
 
