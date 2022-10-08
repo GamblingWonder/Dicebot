@@ -301,11 +301,22 @@ namespace DiceBot
         {
             try
             {
-                ClientHandlr = new HttpClientHandler { UseCookies = true, AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip, AllowAutoRedirect = true };
-                Client = new HttpClient(ClientHandlr) { BaseAddress = new Uri("https://betking.io/") };
+                ClientHandlr = new HttpClientHandler
+                {
+                    UseCookies = true,
+                    AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                    AllowAutoRedirect = true
+                };
+                Client = new HttpClient(ClientHandlr)
+                {
+                    BaseAddress = new Uri("https://betking.io/")
+                };
+
                 Client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("gzip"));
                 Client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("deflate"));
+
                 cookies = new CookieContainer();
+
                 ClientHandlr.CookieContainer = cookies;
                 Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
 

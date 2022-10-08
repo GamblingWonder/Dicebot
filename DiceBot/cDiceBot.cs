@@ -29,10 +29,14 @@ using AutoUpdaterDotNET;
 namespace DiceBot
 {
 
+    public interface IAuthorizationHub
+    {
+        void btnLogIn_Click(object sender, EventArgs e);
+        void OnAuthorizationCompleted(object sender, AuthorizationCompletedEventArgs e);
+    }
 
 
-
-    public partial class cDiceBot : Form
+    public partial class cDiceBot : Form, IAuthorizationHub
     {
 
         public class SiteDetails
@@ -135,6 +139,7 @@ namespace DiceBot
         decimal partialprofit = 0;
         decimal luck = 0;
         decimal wagered = 0;
+
         int numwinstreasks = 0;
         int numlosesreaks = 0;
         int numstreaks = 0;
@@ -221,6 +226,13 @@ namespace DiceBot
             }
         }
 
+
+
+        public void OnAuthorizationCompleted(object sender, AuthorizationCompletedEventArgs e)
+        {
+            CurrentSite.AuthorizationCompleted(e);
+        }
+
         private decimal dPreviousBalance;
         public decimal PreviousBalance
         {
@@ -237,9 +249,6 @@ namespace DiceBot
             // ShowCaptcha tmp = new ShowCaptcha(e);
             // tmp.ShowDialog();
         }
-
-
-
 
 
         #region Fibonacci
@@ -1143,7 +1152,9 @@ end";
         void CurrentSite_FinishedLogin(bool LoggedIn)
         {
             if (InvokeRequired)
+            {
                 Invoke(new DiceSite.dFinishedLogin(CurrentSite_FinishedLogin), LoggedIn);
+            }
             else
             {
                 if (LoggedIn)
@@ -1244,7 +1255,7 @@ end";
             }
         }
 
-
+        /*
         private void UpdatePanels(Size size)
         {
             if (pnlBasic.Visible)
@@ -1261,22 +1272,31 @@ end";
                 programmerModeControl1.Height = size.Height;
             }
         }
-
+        */
         private void UpdateSettingsPanelSizes()
         {
-            if (pnlBasic.Visible)
+
+            try
             {
-                scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
+                if (pnlBasic.Visible)
+                {
+                    scMain.SplitterDistance = (scMain.Width - pnlBasic.Width) - 3;
+                }
+                else if (pnlAdvanced.Visible)
+                {
+                    scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
+                }
+                else if (pnlProgrammer.Visible)
+                {
+                    scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
+                }
             }
-            else if (pnlAdvanced.Visible)
+            catch (Exception ex)
             {
-                scMain.SplitterDistance = (scMain.Width - pnlAdvanced.Width) - 3;
-            }
-            else if (pnlProgrammer.Visible)
-            {
-                scMain.SplitterDistance = (scMain.Width - pnlProgrammer.Width) - 3;
+
             }
         }
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -2781,11 +2801,15 @@ end";
                             CalculateLuck(true);
 
                             if (StatsWindows != null)
+                            {
                                 if (!StatsWindows.IsDisposed)
                                 {
                                     if (Winstreak >= StatsWindows.nudLastStreakWin.Value)
+                                    {
                                         laststreakwin = Winstreak;
+                                    }
                                 }
+                            }
 
                             if (!programmerToolStripMenuItem.Checked || EnableReset)
                             {
@@ -3010,13 +3034,21 @@ end";
 
                         //sounds
                         if (!RunningSimulation)
+                        {
                             if (Sound && SoundStreak && Losestreak > SoundStreakCount)
+                            {
                                 playalarm();
+                            }
+                        }
+
                         //email
                         if (!RunningSimulation && Emails != null)
+                        {
                             if (Emails.Streak && Losestreak > Emails.StreakSize)
+                            {
                                 Emails.SendStreak(Losestreak, Emails.StreakSize, dPreviousBalance);
-
+                            }
+                        }
 
                         //update worst streaks
                         /*if (!RunningSimulation)
@@ -3052,6 +3084,7 @@ end";
                         }
                     }
                     if (!RunningSimulation)
+                    {
                         if (dPreviousBalance >= Limit && chkLimit.Checked && (!programmerToolStripMenuItem.Checked || EnableReset))
                         {
 
@@ -3074,9 +3107,10 @@ end";
                                 Tip(nudAmount.Value, txtTo.Text);
                             }
                         }
-
+                    }
 
                     if (!RunningSimulation)
+                    {
                         if (Wins != 0 && Losses != 0 && chkResetSeed.Checked && (!programmerToolStripMenuItem.Checked || EnableReset))
                         {
                             if (((rdbResetSeedBets.Checked && (Wins + Losses) % nudResetSeed.Value == 0) ||
@@ -3089,11 +3123,14 @@ end";
                             }
 
                         }
+                    }
 
                     try
                     {
                         if (!RunningSimulation)
+                        {
                             UpdateStatsControl();
+                        }
                     }
                     catch (Exception e)
                     {
@@ -3148,23 +3185,30 @@ end";
                             Stop("Simulation complete");
                         }
                         if (!RunningSimulation && !stop)
+                        {
                             if (dPreviousBalance - Lastbet <= nudLowerLimit.Value && chkLowerLimit.Checked && (!programmerToolStripMenuItem.Checked || EnableReset))
                             {
                                 //TrayIcon.BalloonTipText = "Balance lower than " + nudLowerLimit.Value + "\nStopping Bets...";
                                 //TrayIcon.ShowBalloonTip(1000);
                                 Stop("Balance lower than " + nudLowerLimit.Value);
                                 if (Sound && SoundLow)
+                                {
                                     playalarm();
+                                }
                                 //TrayIcon.BalloonTipText = "DiceBot has Stopped Betting\nThe next bet will will have put your Balance below your lower limit";
 
                                 if (Emails.Lower)
+                                {
                                     Emails.SendLowLimit(dPreviousBalance, LowerLimit, Lastbet);
+                                }
                             }
-
+                        }
                         if (!stop)
                         {
                             if (!RunningSimulation)
+                            {
                                 WriteConsole("Betting " + Lastbet + " at " + Chance + "% chance to win, " + (high ? "high" : "low"));
+                            }
                             EnableTimer(tmBet, true);
 
                             withdrew = false;
@@ -3245,6 +3289,7 @@ end";
                 programmerModeControl1.rtbConsole.AppendText(Message + "\r\n");
             }
         }
+
         delegate void dWriteConsole(string Message);
         delegate void dWithdraw(decimal Amount, string Address);
         delegate void dVault(decimal Amount);
@@ -3279,7 +3324,6 @@ end";
             {
                 tmr.Interval = Interval;
             }
-
         }
 
         delegate string[] dGetLabList();
@@ -3288,7 +3332,6 @@ end";
             if (InvokeRequired)
             {
                 return (string[])Invoke(new dGetLabList(GetLabList));
-
             }
             else
             {
@@ -3317,13 +3360,16 @@ end";
                     Simbet();
                 }
                 else
-                if (CurrentSite.ReadyToBet() && valid)
                 {
-                    if (!stop)
-                        PlaceBet();
-                    //EnableTimer(tmBet, false);
+                    if (CurrentSite.ReadyToBet() && valid)
+                    {
+                        if (!stop)
+                        {
+                            PlaceBet();
+                        }
+                        //EnableTimer(tmBet, false);
+                    }
                 }
-
             }
             catch (Exception ex)
             {
@@ -3416,19 +3462,24 @@ end";
             tmpSet.rdbDonateDefault.Checked = donateMode == 2;
             tmpSet.rdbDonateDont.Checked = donateMode == 1;
             writesettings(tmpSet);
+
             if (File.Exists(Environment.GetEnvironmentVariable("APPDATA") + "\\DiceBot2\\tempsim"))
             {
                 File.Delete(Environment.GetEnvironmentVariable("APPDATA") + "\\DiceBot2\\tempsim");
             }
+
             if (File.Exists("currentprofitbet.txt"))
             {
                 File.Delete("currentprofitbet.txt");
             }
+
             if (File.Exists("currentprofittime.txt"))
             {
                 File.Delete("currentprofittime.txt");
             }
+
             string[] files = Directory.GetFiles(".");
+
             foreach (string F in files)
             {
                 if (F.StartsWith(".\\tmp_"))
@@ -3436,18 +3487,16 @@ end";
                     File.Delete(F);
                 }
             }
+
             base.OnClosing(e);
             Application.Exit();
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-
-
             if ((sender as Button).Name.ToUpper().Contains("HIGH"))
             {
                 starthigh = high = true;
-
             }
             else
             {
@@ -4266,24 +4315,32 @@ end";
             if ((sender as Control).Name == "nudMultiplier")
             {
                 if ((sender as NumericUpDown).Value != nudMutliplier2.Value)
+                {
                     nudMutliplier2.Value = (sender as NumericUpDown).Value;
+                }
                 nudPercIncreaseLoss.Value = (100m * nudMutliplier2.Value) - 100m;
             }
             if ((sender as Control).Name == "nudWinMultiplier")
             {
                 if ((sender as NumericUpDown).Value != nudWinMultiplier2.Value)
+                {
                     nudWinMultiplier2.Value = (sender as NumericUpDown).Value;
+                }
                 nudPercIncreaseWin.Value = (100m * nudWinMultiplier2.Value) - 100m;
             }
             if ((sender as Control).Name == "nudMinBet")
             {
                 if ((sender as NumericUpDown).Value != nudMinbet2.Value)
+                {
                     nudMinbet2.Value = (sender as NumericUpDown).Value;
+                }
             }
             if ((sender as Control).Name == "nudChance")
             {
                 if ((sender as NumericUpDown).Value != nudChance2.Value)
+                {
                     nudChance2.Value = (sender as NumericUpDown).Value;
+                }
                 nudPayout.Value = (100m - CurrentSite.edge) / nudChance.Value;
             }
 
@@ -5438,7 +5495,7 @@ end";
             }
         }
 
-        private void btnLogIn_Click(object sender, EventArgs e)
+        public void btnLogIn_Click(object sender, EventArgs e)
         {
 
             register = false;
@@ -5486,6 +5543,7 @@ end";
                 {
                     CurrentSite.UpdateMirror(comboBoxMirrorSelector.SelectedItem.ToString());
                 }
+
                 CurrentSite.Currency = curcur;
                 CurrentSite.FinishedLogin -= CurrentSite_FinishedLogin;
                 CurrentSite.FinishedLogin += CurrentSite_FinishedLogin;

@@ -20,11 +20,23 @@ namespace DiceBot.Core
 
     public abstract class DiceSite
     {
+
+
+        //AuthorizationCompletedEventArgs
+        public event EventHandler<AuthorizationCompletedEventArgs> OnAuthorizationCompleted;
+
+        public virtual void AuthorizationCompleted(AuthorizationCompletedEventArgs e)
+        {
+            OnAuthorizationCompleted?.Invoke(this, e);
+        }
+
         public event EventHandler<RequireCaptchaEventArgs> OnRequireCaptcha;
         protected void RequireCaptcha(RequireCaptchaEventArgs e)
         {
             OnRequireCaptcha?.Invoke(this, e);
         }
+
+
         bool reg = true;
         public bool register { get { return reg; } set { reg = value; } }
         protected string prox_host = "";
@@ -150,6 +162,8 @@ namespace DiceBot.Core
             //URL = url;
         }
 
+     
+
         public void PlaceBet(bool High, decimal amount, decimal chance, string BetGuid)
         {
             Parent.updateStatus(string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "Betting: {0:0.00000000} at {1:0.00000000} {2}", amount, chance, High ? "High" : "Low"));
@@ -187,9 +201,13 @@ namespace DiceBot.Core
             if (res)
             {
                 if (AutoUpdate)
+                {
                     ForceUpdateStats = true;
+                }
                 else
+                {
                     balance -= amount;
+                }
             }
             return res;
         }
@@ -226,8 +244,9 @@ namespace DiceBot.Core
 
             StringBuilder hex = new StringBuilder(hash.Length * 2);
             foreach (byte b in hash)
+            {
                 hex.AppendFormat("{0:x2}", b);
-
+            }
 
             for (int i = 0; i < hex.Length; i += charstouse)
             {
@@ -236,7 +255,9 @@ namespace DiceBot.Core
 
                 decimal lucky = int.Parse(s, System.Globalization.NumberStyles.HexNumber);
                 if (lucky < 1000000)
+                {
                     return lucky / 10000;
+                }
             }
             return 0;
         }
@@ -265,8 +286,9 @@ namespace DiceBot.Core
 
             StringBuilder hex = new StringBuilder(hash.Length * 2);
             foreach (byte b in hash)
+            {
                 hex.AppendFormat("{0:x2}", b);
-
+            }
 
             for (int i = 0; i < hex.Length; i += charstouse)
             {
@@ -275,7 +297,9 @@ namespace DiceBot.Core
 
                 decimal lucky = int.Parse(s, System.Globalization.NumberStyles.HexNumber);
                 if (lucky < 1000000)
+                {
                     return lucky / 10000;
+                }
             }
             return 0;
         }
@@ -295,9 +319,13 @@ namespace DiceBot.Core
             if (res)
             {
                 if (AutoUpdate)
+                {
                     ForceUpdateStats = true;
+                }
                 else
+                {
                     balance -= amount;
+                }
             }
             return res;
         }
@@ -341,7 +369,9 @@ namespace DiceBot.Core
             Parent.updateWins(wins);
             Parent.updateLosses(losses);
             if (FinishedLogin != null)
+            {
                 FinishedLogin(Success);
+            }
         }
 
         public delegate void dFinishedLogin(bool LoggedIn);
@@ -377,6 +407,16 @@ namespace DiceBot.Core
         public decimal Chance { get; set; }
         public string Guid { get; set; }
     }
+
+    public class AuthorizationCompletedEventArgs : EventArgs
+    {
+
+        public string UserAgent { get; set; }
+        public CookieCollection Cookies3 { get; set; }
+        public List<CefSharp.Cookie> Cookies1 { get;  set; }
+        public List<CefSharp.Cookie> Cookies2 { get;  set; }
+    }
+
     public class RequireCaptchaEventArgs : EventArgs
     {
         public string PublicKey { get; set; }

@@ -27,13 +27,10 @@ namespace DiceBot.Schema.Stake
 namespace DiceBot
 {
 
-
-    // https://stackoverflow.com/questions/35767845/how-to-handle-recaptcha-on-third-party-site-in-my-client-application
-
     public class Stake : DiceSite, IDiceSite
     {
 
-        protected ClientSettings settings;
+        protected ClientSettings clientSettings;
 
         protected string URL = "https://api.primedice.com/graphql";
         protected string RolName = "primediceRoll";
@@ -74,7 +71,7 @@ namespace DiceBot
         long uid = 0;
         DateTime lastupdate = new DateTime();
 
-        APIClientManager APIClientManager;
+        APIClientManager APIConnector;
 
         bool getid = false;
 
@@ -120,16 +117,18 @@ namespace DiceBot
             MirrorList.Add("stake.ac");
             MirrorList.Add("stake.icu");
             MirrorList.Add("stake.us");
+            MirrorList.Add("stake.kim");
 
             CurrentMirror = "";
 
 
-            settings = new ClientSettings()
+            clientSettings = new ClientSettings()
             {
                 Site = SiteURL
             };
 
         }
+
 
         string userid = "";
         int retrycount = 0;
@@ -159,7 +158,7 @@ namespace DiceBot
                             query = "query DiceBotGetBalance{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
                         };
 
-                        var restResponse = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
+                        var restResponse = APIConnector.Execute<PDStake.GenericResponse>(req).Result;
 
                         var response = restResponse.Result;
 
@@ -207,26 +206,64 @@ namespace DiceBot
             return false;
         }
 
+        public override void AuthorizationCompleted(AuthorizationCompletedEventArgs e)
+        {
+            base.AuthorizationCompleted(e);
 
-        //public override void Login(string Username, string Password, string otp)
-        //{
-        //    try
-        //    {
-        //        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-        //        settings.Update("", Password);
-        //        connection = new Cnx(settings.Site, settings.GraphQLEndPoint, settings.ApiKey);
-        //        var payload = new RequestData()
-        //        {
-        //            operationName = "DiceBotLogin",
-        //            query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
-        //        };
-        //        var result = connection.Query(payload);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+            var cookies = new List<Cookie>();
+
+            foreach (var item in e.Cookies1)
+            {
+                if (item.Name.Equals(CookiesHelper.CloudflareCookieName))
+                {
+
+                    var ClearanceCookie = new Cookie()
+                    {
+                        Name = CookiesHelper.CloudflareCookieName,
+                        Value = item.Value,
+                        Domain = item.Domain,
+                        Path = "/",
+                        Expired = false,
+                        Secure = true,
+                        Expires = item.Expires.Value,
+                        HttpOnly = false
+                    };
+
+                    cookies.Add(ClearanceCookie);
+
+                }
+            }
+
+            clientSettings.SetCookies(cookies);
+            clientSettings.SetUserAgent(e.UserAgent);
+
+            Login("", APIConnector.ApiKey, "");
+
+        }
+
+
+        private void InitAuthorizeProcess(string url)
+        {
+
+            // ------------------------------------------------------
+            // The connection require manual authorization
+            // ------------------------------------------------------
+
+            // Open AuthorizeBrowser window
+            // the user do the validation
+            // after validation, he press continue
+            // we pick the cookies and save it for future requests
+
+            // ------------------------------------------------------
+
+            var mb = new AuthorizeBrowser();
+
+            mb.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            mb.TargetUrl = url;
+
+            mb.Show(this.Parent);
+
+        }
 
         public override void Login(string Username, string Password, string otp)
         {
@@ -235,24 +272,9 @@ namespace DiceBot
 
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-                settings.Update("", Password);
+                clientSettings.Update(clientSettings.Site, Password);
 
-                /*
-                ApiClient = null;
-                ApiClient = new StakeApiClient(settings);
-                var req = new RequestData()
-                {
-                    operationName = "DiceBotLogin",
-                    query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
-                };
-                var response = ApiClient.Execute(req);
-                var user = response.Get<pdUser>("user");
-                userid = user.id;
-                */
-
-
-                APIClientManager = new APIClientManager(settings.Site, settings.ApiKey);
-
+                APIConnector = APIConnector ?? new APIClientManager(clientSettings);
 
                 var req = new RequestPayload()
                 {
@@ -260,46 +282,59 @@ namespace DiceBot
                     query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
                 };
 
+                var auth = APIConnector.Authorize<PDStake.GenericResponse>(req).Result;
 
-                var auth = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
-                //var res = JsonConvert.DeserializeObject<PDStake.GenericResponse>(auth.Content);
-                var res = auth.Result;
-
-                userid = res.Data.User.id;
-
-                if (string.IsNullOrWhiteSpace(userid))
+                if (auth.HttpStatus == HttpStatusCode.Forbidden)
                 {
-                    finishedlogin(false);
+                    InitAuthorizeProcess(APIConnector.ApiEndpoint);
+                    return;
                 }
                 else
                 {
 
-                    foreach (Statistic x in res.Data.User.Statistics)
+                    var res = auth.Result;
+
+                    userid = res.Data.User.id;
+
+                    if (string.IsNullOrWhiteSpace(userid))
                     {
-                        if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
-                        {
-                            this.bets = (int)x.bets;
-                            this.wins = (int)x.wins;
-                            this.losses = (int)x.losses;
-                            this.profit = x.profit.HasValue ? (decimal)x.profit.Value : 0;
-                            this.wagered = (decimal)x.betAmount;
-                            break;
-                        }
+                        finishedlogin(false);
                     }
-                    foreach (PrimediceSchema.Balance x in res.Data.User.Balances)
+                    else
                     {
-                        if (x.available.currency.ToLower() == Currency.ToLower())
+
+                        foreach (Statistic x in res.Data.User.Statistics)
                         {
-                            balance = (decimal)x.available.amount;
-                            break;
+                            if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
+                            {
+                                this.bets = (int)x.bets;
+                                this.wins = (int)x.wins;
+                                this.losses = (int)x.losses;
+                                this.profit = x.profit.HasValue ? (decimal)x.profit.Value : 0;
+                                this.wagered = (decimal)x.betAmount;
+                                break;
+                            }
                         }
+
+                        foreach (PrimediceSchema.Balance x in res.Data.User.Balances)
+                        {
+                            if (x.available.currency.ToLower() == Currency.ToLower())
+                            {
+                                balance = (decimal)x.available.amount;
+                                break;
+                            }
+                        }
+
+                        finishedlogin(true);
+                        ispd = true;
+
+                        Thread t = new Thread(GetBalanceThread);
+                        t.Start();
+
+                        return;
+
                     }
 
-                    finishedlogin(true);
-                    ispd = true;
-                    Thread t = new Thread(GetBalanceThread);
-                    t.Start();
-                    return;
                 }
 
             }
@@ -307,9 +342,8 @@ namespace DiceBot
             {
                 if (e.Response != null)
                 {
-
-
-
+                    InitAuthorizeProcess(APIConnector.ApiEndpoint);
+                    return;
                 }
                 finishedlogin(false);
             }
@@ -320,6 +354,186 @@ namespace DiceBot
             }
         }
 
+
+        //public void Login2(string Username, string Password, string otp)
+        //{
+        //    try
+        //    {
+        //        var bypass = CloudflareEvader.CreateBypassedWebClient(settings.ApiEndPoint);
+        //        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+        //        settings.Update("", Password);
+        //        /*
+        //        ApiClient = null;
+        //        ApiClient = new StakeApiClient(settings);
+        //        var req = new RequestData()
+        //        {
+        //            operationName = "DiceBotLogin",
+        //            query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
+        //        };
+        //        var response = ApiClient.Execute(req);
+        //        var user = response.Get<pdUser>("user");
+        //        userid = user.id;
+        //        */
+        //        APIConnector = new APIClientManager(settings.Site, settings.ApiKey);
+        //        var req = new RequestPayload()
+        //        {
+        //            operationName = "DiceBotLogin",
+        //            query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
+        //        };
+        //        var auth = APIConnector.Execute<PDStake.GenericResponse>(req).Result;
+        //        //var res = JsonConvert.DeserializeObject<PDStake.GenericResponse>(auth.Content);
+        //        var res = auth.Result;
+        //        userid = res.Data.User.id;
+        //        if (string.IsNullOrWhiteSpace(userid))
+        //        {
+        //            finishedlogin(false);
+        //        }
+        //        else
+        //        {
+        //            foreach (Statistic x in res.Data.User.Statistics)
+        //            {
+        //                if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
+        //                {
+        //                    this.bets = (int)x.bets;
+        //                    this.wins = (int)x.wins;
+        //                    this.losses = (int)x.losses;
+        //                    this.profit = x.profit.HasValue ? (decimal)x.profit.Value : 0;
+        //                    this.wagered = (decimal)x.betAmount;
+        //                    break;
+        //                }
+        //            }
+        //            foreach (PrimediceSchema.Balance x in res.Data.User.Balances)
+        //            {
+        //                if (x.available.currency.ToLower() == Currency.ToLower())
+        //                {
+        //                    balance = (decimal)x.available.amount;
+        //                    break;
+        //                }
+        //            }
+        //            finishedlogin(true);
+        //            ispd = true;
+        //            Thread t = new Thread(GetBalanceThread);
+        //            t.Start();
+        //            return;
+        //        }
+        //    }
+        //    catch (WebException e)
+        //    {
+        //        if (e.Response != null)
+        //        {
+        //        }
+        //        finishedlogin(false);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Parent.DumpLog(e.ToString(), -1);
+        //        finishedlogin(false);
+        //    }
+        //}
+        //public void Login3(string Username, string Password, string otp)
+        //{
+        //    try
+        //    {
+
+        //        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+        //        settings.Update("", Password);
+
+        //        APIConnector = new APIClientManager(settings.Site, settings.ApiKey);
+
+        //        var req = new RequestPayload()
+        //        {
+        //            operationName = "DiceBotLogin",
+        //            query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
+        //        };
+
+        //        var ApiUrl = $"https://{settings.Site}/_api/graphql";
+        //        var SiteDomain = $"https://{settings.Site}";
+        //        var ApiKey = settings.ApiKey;
+
+
+        //        CookieContainer cookies = new CookieContainer();
+
+        //        using (var httpClientHandler = new HttpClientHandler())
+        //        {
+
+        //            httpClientHandler.CookieContainer = cookies;
+
+        //            using (var client = new HttpClient(httpClientHandler))
+        //            {
+
+        //                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
+
+        //                client.BaseAddress = new Uri(ApiUrl);
+
+        //                HttpRequestMessage requestMessage = new HttpRequestMessage(new HttpMethod("POST"), "");
+
+        //                requestMessage.Content = new StringContent(JsonConvert.SerializeObject(req), Encoding.UTF8, "application/json");
+
+        //                requestMessage.Headers.Add("authorization", string.Format("Bearer {0}", ApiKey));
+        //                requestMessage.Headers.Add("x-access-token", ApiKey);
+
+        //                var response = client.PostAsync("", requestMessage.Content).Result;
+
+        //                //var contents = response.Content.ReadAsStringAsync().Result;
+
+        //                string s1 = "";
+
+        //                if (response.IsSuccessStatusCode)
+        //                {
+        //                    s1 = response.Content.ReadAsStringAsync().Result;
+        //                }
+        //                else
+        //                {
+        //                    if (response.StatusCode == HttpStatusCode.Forbidden)
+        //                    {
+        //                        s1 = response.Content.ReadAsStringAsync().Result;
+        //                        //System.Threading.Tasks.Task.Factory.StartNew(() =>
+        //                        //{
+        //                        //System.Windows.Forms.MessageBox.Show($"{SiteDomain} has their cloudflare protection on HIGH\n\nThis will cause a slight delay in logging in. Please allow up to a minute.");
+        //                        //});
+        //                        //if (!Cloudflare.doCFThing(s1, client, httpClientHandler, 0, SiteDomain))
+        //                        //{
+        //                        // finishedlogin(false);
+        //                        // return;
+        //                        //}
+        //                    }
+        //                    else
+        //                    {
+        //                    }
+        //                }
+
+        //                s1 = response.Content.ReadAsStringAsync().Result;
+
+        //                s1 = s1.Substring(s1.IndexOf("window.settings"));
+        //                s1 = s1.Substring(s1.IndexOf("\"csrfToken\":\"") + "\"csrfToken\":\"".Length);
+
+        //                string csrf = s1.Substring(0, s1.IndexOf("\""));
+
+        //                client.DefaultRequestHeaders.Add("csrf-token", csrf);
+
+        //            }
+
+        //        }
+
+        //    }
+        //    catch (WebException e)
+        //    {
+        //        if (e.Response != null)
+        //        {
+
+
+
+        //        }
+        //        finishedlogin(false);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Parent.DumpLog(e.ToString(), -1);
+        //        finishedlogin(false);
+        //    }
+        //}
+
         public override void UpdateMirror(string url)
         {
             if (url != "" && MirrorList.Contains(url))
@@ -328,7 +542,7 @@ namespace DiceBot
                 SiteURL = $"https://{url}/";
                 URL = $"https://api.{url}/graphql";
 
-                settings.Update(url);
+                clientSettings.Update(url);
             }
         }
 
@@ -363,7 +577,7 @@ namespace DiceBot
                     }
                 };
 
-                var restResponse = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
+                var restResponse = APIConnector.Execute<PDStake.GenericResponse>(req).Result;
 
                 var response = restResponse.Result;
 
@@ -379,7 +593,6 @@ namespace DiceBot
                 {
 
                     RollDice tmp = response.Data.DiceBetResult;
-
                     Lastbet = DateTime.Now;
 
                     try
@@ -419,12 +632,14 @@ namespace DiceBot
                         tmpbet.Guid = tmp5.Guid;
                         FinishedBet(tmpbet);
                         retrycount = 0;
+
                     }
                     catch (Exception e)
                     {
                         Parent.DumpLog(e.ToString(), -1);
                         Parent.updateStatus("Some kind of error happened. I don't really know graphql, so your guess as to what went wrong is as good as mine.");
                     }
+
                 }
 
             }
@@ -495,7 +710,7 @@ namespace DiceBot
                 }
             };
 
-            var response = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
+            var response = APIConnector.Execute<PDStake.GenericResponse>(req).Result;
 
             if (response.Result.Data.Bet != null)
             {
@@ -558,11 +773,11 @@ namespace DiceBot
                     query = "mutation DiceBotRotateSeed ($seed: String!){ rotateServerSeed { seed seedHash nonce } changeClientSeed(seed: $seed){seed}}",
                     variables = new
                     {
-                        seed =  CustomSeed.IsCustom ? CustomSeed.Value : R.Next(0, int.MaxValue).ToString()
+                        seed = CustomSeed.IsCustom ? CustomSeed.Value : R.Next(0, int.MaxValue).ToString()
                     }
                 };
 
-                var response = APIClientManager.Execute<PDStake.GenericResponse>(req).Result;
+                var response = APIConnector.Execute<PDStake.GenericResponse>(req).Result;
 
                 if (response.Result != null)
                 {
@@ -623,7 +838,7 @@ namespace DiceBot
                     query = "mutation DiceBotWithdrawal{createWithdrawal(currency:" + Currency.ToLower() + ", address:\"" + Address + "\",amount:" + amount.ToString("0.00000000", System.Globalization.NumberFormatInfo.InvariantInfo) + "){id name address hash amount walletFee createdAt status currency}}"
                 };
 
-                var restResponse = APIClientManager.Execute(req).Result;
+                var restResponse = APIConnector.Execute(req).Result;
                 // var response = JsonConvert.DeserializeObject<PrimediceSchema.Data>(restResponse.Content);
 
                 return restResponse.StatusCode == HttpStatusCode.OK;
@@ -656,7 +871,7 @@ namespace DiceBot
                 //    return response.Data != null;
                 //}
 
-                var restResponse = APIClientManager.SendToVault(Currency.ToLower(), amount).Result;
+                var restResponse = APIConnector.SendToVault(Currency.ToLower(), amount).Result;
 
                 return restResponse.StatusCode == HttpStatusCode.OK;
 
@@ -698,8 +913,9 @@ namespace DiceBot
 
             StringBuilder hex = new StringBuilder(hash.Length * 2);
             foreach (byte b in hash)
+            {
                 hex.AppendFormat("{0:x2}", b);
-
+            }
             decimal total = 0;
             for (int i = 0; i < 8; i += charstouse)
             {

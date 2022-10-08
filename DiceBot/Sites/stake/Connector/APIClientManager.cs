@@ -1,10 +1,12 @@
 ﻿using Connectors.Stake.Response;
+using DiceBot;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static DiceBot.PDStake;
@@ -353,6 +355,9 @@ namespace Connectors.Stake
         }
 
         public Connection Mode { get; set; } = ClientSettings.Connection.DEFAULT;
+
+        public List<Cookie> PersistentCookies { get; private set; }
+
         public string Site { get; set; }
         public string ApiKey { get; set; }
         public string ApiEndPoint { get; set; }
@@ -361,6 +366,11 @@ namespace Connectors.Stake
         public string Referrer { get; set; }
         public int Timeout { get; set; } = 1000;
         public string UserAgent { get; private set; } = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36";
+
+        public string SiteFormat { get; set; } = "https://{0}";
+
+        public string EndpointFormat { get; set; } = "https://{0}";
+
 
         public void Update(string site = "", string apiKey = "")
         {
@@ -378,6 +388,14 @@ namespace Connectors.Stake
                 this.ApiEndPoint = $"https://{site}/_api";
                 this.WebSocketEndPoint = $"wss://{site}/_api/graphql";
                 this.GraphQLEndPoint = $"https://{site}/_api/graphql";
+
+                /*
+                this.Site = site;
+                this.Referrer = string.Format(SiteFormat, site);
+                this.ApiEndPoint = string.Format(EndpointFormat, site); //$"https://{site}/_api";
+                this.WebSocketEndPoint = string.Format(EndpointFormat, site); //$"wss://{site}/_api/graphql";
+                this.GraphQLEndPoint = string.Format(EndpointFormat, site); //$"https://{site}/_api/graphql";
+                */
             }
 
             if (!string.IsNullOrEmpty(apiKey))
@@ -386,6 +404,8 @@ namespace Connectors.Stake
             }
 
         }
+
+
 
         public ClientSettings()
         {
@@ -396,29 +416,124 @@ namespace Connectors.Stake
             Update(site, apiKey);
         }
 
+        public void SetCookies(List<Cookie> cc0)
+        {
+            PersistentCookies = cc0;
+        }
+
+        public void SetUserAgent(string userAgent)
+        {
+            UserAgent = userAgent;
+        }
+
     }
+
+    //public class ModernHttpClientFactory : DefaultHttpClientFactory
+    //{
+    //    #region Methods
+
+    //    /// <summary>
+    //    /// Create the message handler.
+    //    /// </summary>
+    //    /// <param name="client">The REST client that wants to create the HTTP client</param>
+    //    /// <param name="request">The REST request for which the HTTP client is created</param>
+    //    /// <returns>
+    //    /// A new HttpMessageHandler object
+    //    /// </returns>
+    //    protected override HttpMessageHandler CreateMessageHandler(IRestClient client, IRestRequest request)
+    //    {
+    //        var proxy = GetProxy(client);
+    //        var cookies = GetCookies(client, request);
+    //        var credentials = client.Credentials;
+    //        var httpClientHandler = new NativeMessageHandler();
+
+    //        if (httpClientHandler.SupportsProxy && proxy != null)
+    //        {
+    //            httpClientHandler.UseProxy = true;
+    //            httpClientHandler.Proxy = new RequestProxyWrapper(proxy);
+    //        }
+
+    //        if (cookies != null)
+    //        {
+    //            httpClientHandler.UseCookies = true;
+    //            httpClientHandler.CookieContainer = cookies;
+    //        }
+
+    //        if (credentials != null)
+    //        {
+    //            httpClientHandler.Credentials = credentials;
+    //        }
+
+    //        return httpClientHandler;
+    //    }
+
+    //    #endregion
+    //}
+
     public class APIClientManager
     {
 
-        public ClientSettings Settinrg { get; private set; }
-        public CookieContainer cc { get; private set; }
+        //HttpClient _HttpClient;
+        //HttpClientHandler _HttpClientHandler;
+
+        public ClientSettings Settings { get; private set; }
+
         public RestClient SharedRestClient { get; private set; }
 
-        public string ApiUrl { get; private set; }
+        public string GraphqlEndpoint { get; private set; }
+        public string ApiEndpoint { get; set; }
+
+        public string HostEndpoint { get; set; }
+
         public string URL { get; set; }
         public string Domain { get; set; }
         public string ApiKey { get; set; }
 
+
+        public CookieContainer Cookies { get; private set; }
+
+        public string UserAgent { get; private set; } = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36";
+
+
         public APIClientManager()
         {
-
+            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34";
         }
 
-        public APIClientManager(string site, string apikey)
+
+        public APIClientManager(string site, string apikey) : this()
         {
             Domain = site;
             ApiKey = apikey;
+            HostEndpoint = $"https://{Domain}";
+            ApiEndpoint = $"https://{Domain}/_api";
+            GraphqlEndpoint = $"https://{Domain}/_api/graphql";
         }
+
+        public APIClientManager(ClientSettings settings) : this()
+        {
+            Domain = settings.Site;
+            ApiKey = settings.ApiKey;
+            HostEndpoint = $"https://{Domain}";
+            ApiEndpoint = $"https://{Domain}/_api";
+            GraphqlEndpoint = $"https://{Domain}/_api/graphql";
+
+            Settings = settings;
+
+
+        }
+
+        /*
+        public static void AddCloudflareHeaders(this System.Web.HttpRequest request, Uri refererUri)
+        {
+            request.AddHeader(HttpHeader.Referer, refererUri.AbsoluteUri);
+            request.AddHeader("Upgrade-Insecure-Requests", "1");
+
+            if (!request.ContainsHeader(HttpHeader.AcceptLanguage))
+                request.AddHeader(HttpHeader.AcceptLanguage, DefaultAcceptLanguage);
+        }
+    */
+
 
         public string RandomString(int length)
         {
@@ -433,7 +548,7 @@ namespace Connectors.Stake
             if (dispose == true)
             {
                 SharedRestClient = null;
-                cc = null;
+                Cookies = null;
             }
 
             if (SharedRestClient != null)
@@ -441,68 +556,80 @@ namespace Connectors.Stake
                 return;
             }
 
-            //ApiUrl = "https://api." + Domain + "/graphql";
-            ApiUrl = "https://" + Domain + "/_api/graphql";
-
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            this.cc = new CookieContainer();
 
-            //var options = new RestClientOptions()
+            //this.Cookies = PersistentCookies ?? new CookieContainer();
+
+            this.Cookies = new CookieContainer();
+
+            //var testCookie = new Cookie()
             //{
-            //    BaseUrl = new Uri(ApiUrl),
-            //    CookieContainer = this.cc,
-            //    UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+            //    Name = "cf_clearance",
+            //    Value = "bghfMzhE.eXbtX.YfJbUh9Qvp8fSb7iJ5R3vIERtCuo-1665171559-0-150",
+            //    Domain = ".stake.com",
+            //    Path = "/",
+            //    Expired = false,
+            //    Secure = true,
+            //    Expires = DateTime.Parse("2023-10-07T20:39:19.353Z"),
+            //    HttpOnly = false
             //};
+            //this.Cookies.Add(testCookie);
 
-            //SharedRestClient = new RestClient(options);
+            if (Settings.PersistentCookies != null)
+            {
+                foreach (var cookie in Settings.PersistentCookies)
+                {
+                    this.Cookies.Add(cookie);
+                }
+            }
 
-            SharedRestClient = new RestClient(new Uri(ApiUrl));
-            SharedRestClient.CookieContainer = this.cc;
-            SharedRestClient.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36";
+            SharedRestClient = new RestClient(new Uri(GraphqlEndpoint));
+            SharedRestClient.CookieContainer = this.Cookies;
+            SharedRestClient.UserAgent = Settings.UserAgent ?? UserAgent;// "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36";
 
         }
 
-        private RestRequest CreateDefaultRestRequest(string apiKey)
+        private RestRequest CreateDefaultRestRequest(string apiKey, bool includeCloudflareHeaders = false)
         {
             RestRequest restRequest = new RestRequest(Method.POST);
             restRequest.AddHeader("authorization", string.Format("Bearer {0}", apiKey));
             restRequest.AddHeader("x-access-token", apiKey);
             restRequest.AddHeader("Content-type", "application/json");
+
+            if (includeCloudflareHeaders)
+            {
+                restRequest.AddHeader("referer", Settings.Referrer);
+                restRequest.AddHeader("Upgrade-Insecure-Requests", "1");
+            }
+
             return restRequest;
         }
 
-        public async Task<IRestResponse> Authorize()
-        {
 
-            try
-            {
 
-                var payload = new BetQuery
-                {
-                    operationName = "initialUserRequest",
-                    variables = new BetClass() { },
-                    query = "query initialUserRequest {\n  user {\n    ...UserAuth\n    __typename\n  }\n}\n\nfragment UserAuth on User {\n  id\n  name\n  email\n  hasPhoneNumberVerified\n  hasEmailVerified\n  hasPassword\n  intercomHash\n  createdAt\n  hasTfaEnabled\n  mixpanelId\n  hasOauth\n  isKycBasicRequired\n  isKycExtendedRequired\n  isKycFullRequired\n  kycBasic {\n    id\n    status\n    __typename\n  }\n  kycExtended {\n    id\n    status\n    __typename\n  }\n  kycFull {\n    id\n    status\n    __typename\n  }\n  flags {\n    flag\n    __typename\n  }\n  roles {\n    name\n    __typename\n  }\n  balances {\n    ...UserBalanceFragment\n    __typename\n  }\n  activeClientSeed {\n    id\n    seed\n    __typename\n  }\n  previousServerSeed {\n    id\n    seed\n    __typename\n  }\n  activeServerSeed {\n    id\n    seedHash\n    nextSeedHash\n    nonce\n    blocked\n    __typename\n  }\n  __typename\n}\n\nfragment UserBalanceFragment on UserBalance {\n  available {\n    amount\n    currency\n    __typename\n  }\n  vault {\n    amount\n    currency\n    __typename\n  }\n  __typename\n}\n"
-                };
-
-                CreateOrUseDefaultRestClient();
-
-                var request = CreateDefaultRestRequest(ApiKey);
-
-                request.AddJsonBody(payload);
-
-                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
-
-                return restResponse;
-
-            }
-            catch (Exception ex)
-            {
-                //luaPrint(ex.Message);
-                throw new Exception(ex.Message, ex);
-            }
-
-        }
+        //public async Task<IRestResponse> Authorize()
+        //{
+        //    try
+        //    {
+        //        var payload = new BetQuery
+        //        {
+        //            operationName = "initialUserRequest",
+        //            variables = new BetClass() { },
+        //            query = "query initialUserRequest {\n  user {\n    ...UserAuth\n    __typename\n  }\n}\n\nfragment UserAuth on User {\n  id\n  name\n  email\n  hasPhoneNumberVerified\n  hasEmailVerified\n  hasPassword\n  intercomHash\n  createdAt\n  hasTfaEnabled\n  mixpanelId\n  hasOauth\n  isKycBasicRequired\n  isKycExtendedRequired\n  isKycFullRequired\n  kycBasic {\n    id\n    status\n    __typename\n  }\n  kycExtended {\n    id\n    status\n    __typename\n  }\n  kycFull {\n    id\n    status\n    __typename\n  }\n  flags {\n    flag\n    __typename\n  }\n  roles {\n    name\n    __typename\n  }\n  balances {\n    ...UserBalanceFragment\n    __typename\n  }\n  activeClientSeed {\n    id\n    seed\n    __typename\n  }\n  previousServerSeed {\n    id\n    seed\n    __typename\n  }\n  activeServerSeed {\n    id\n    seedHash\n    nextSeedHash\n    nonce\n    blocked\n    __typename\n  }\n  __typename\n}\n\nfragment UserBalanceFragment on UserBalance {\n  available {\n    amount\n    currency\n    __typename\n  }\n  vault {\n    amount\n    currency\n    __typename\n  }\n  __typename\n}\n"
+        //        };
+        //        CreateOrUseDefaultRestClient();
+        //        var request = CreateDefaultRestRequest(ApiKey);
+        //        request.AddJsonBody(payload);
+        //        var restResponse = SharedRestClient.ExecuteAsync(request).Result;
+        //        return restResponse;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //luaPrint(ex.Message);
+        //        throw new Exception(ex.Message, ex);
+        //    }
+        //}
 
         public async Task<IRestResponse> SendToVault(string currency, decimal sentamount)
         {
@@ -533,8 +660,6 @@ namespace Connectors.Stake
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
-
                 return null;
             }
         }
@@ -550,26 +675,20 @@ namespace Connectors.Stake
                 //    variables = new BetClass()
                 //    {
                 //        seed = RandomString(10)
-
                 //    },
                 //    query = "mutation RotateSeedPair($seed: String!) {\n  rotateSeedPair(seed: $seed) {\n    clientSeed {\n      user {\n        id\n        activeClientSeed {\n          id\n          seed\n          __typename\n        }\n        activeServerSeed {\n          id\n          nonce\n          seedHash\n          nextSeedHash\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"
                 //};
-
                 //CreateOrUseDefaultRestClient();
-
                 //var request = CreateDefaultRestRequest(ApiKey);
-
                 //request.AddJsonBody(payload);
-
                 //var restResponse = await SharedRestClient.ExecuteAsync(request);
-
                 //return restResponse;
+
                 throw new NotImplementedException();
 
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
                 throw new Exception(ex.Message, ex);
             }
 
@@ -599,7 +718,6 @@ namespace Connectors.Stake
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
                 return null;
             }
 
@@ -641,7 +759,6 @@ namespace Connectors.Stake
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
                 return null;
             }
         }
@@ -663,7 +780,6 @@ namespace Connectors.Stake
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
                 return null;
             }
         }
@@ -685,7 +801,6 @@ namespace Connectors.Stake
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
                 return null;
             }
         }
@@ -706,7 +821,6 @@ namespace Connectors.Stake
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
                 return null;
             }
         }
@@ -787,7 +901,6 @@ namespace Connectors.Stake
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
                 return null;
             }
 
@@ -827,16 +940,32 @@ namespace Connectors.Stake
             }
         }
 
-
-        public async Task<ResponseBaseAs<TResult>> Execute<TResult>(RequestPayload payload)
+        public async Task<ResponseBaseAs<TResult>> Authorize<TResult>(RequestPayload payload)
         {
             try
             {
-                CreateOrUseDefaultRestClient();
-                var request = CreateDefaultRestRequest(ApiKey);
+
+                CreateOrUseDefaultRestClient(true);
+
+                var request = CreateDefaultRestRequest(ApiKey, true);
+
                 request.AddJsonBody(payload);
+
                 var restResponse = SharedRestClient.ExecuteAsync(request).Result;
-                return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content));
+
+                if (restResponse.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    return new ResponseAs<TResult>(default(TResult))
+                    {
+                        HttpStatus = HttpStatusCode.Forbidden
+                    };
+                }
+
+                return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content))
+                {
+                    HttpStatus = HttpStatusCode.OK
+                };
+
             }
             catch (Exception ex)
             {
@@ -845,24 +974,39 @@ namespace Connectors.Stake
 
         }
 
-        /*
-        public async Task<IRestResponse> Execute(BetQuery payload)
+        public async Task<ResponseBaseAs<TResult>> Execute<TResult>(RequestPayload payload)
         {
             try
             {
+
                 CreateOrUseDefaultRestClient();
+
                 var request = CreateDefaultRestRequest(ApiKey);
+
                 request.AddJsonBody(payload);
-                var restResponse = await SharedRestClient.ExecuteAsync(request);
-                return restResponse;
+
+                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
+
+                if (restResponse.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    return new ResponseAs<TResult>(default(TResult))
+                    {
+                        HttpStatus = HttpStatusCode.Forbidden
+                    };
+                }
+
+                return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content))
+                {
+                    HttpStatus = HttpStatusCode.OK
+                };
+
             }
             catch (Exception ex)
             {
-                //luaPrint(ex.Message);
-                return null;
+                return new ErrorAs<TResult>(ex);
             }
 
         }
-        */
+
     }
 }

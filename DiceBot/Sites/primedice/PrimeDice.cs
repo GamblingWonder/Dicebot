@@ -36,10 +36,12 @@ namespace DiceBot
     public class PDStake : PrimediceSchema
     {
 
-        public abstract class ResponseBaseAs<TResult>
+        public class ResponseBaseAs<TResult>
         {
             public TResult Result { get; set; }
             public Exception Error { get; set; }
+            public HttpStatusCode HttpStatus { get; set; }
+
         }
 
         public class ResponseAs<TResult> : ResponseBaseAs<TResult>
