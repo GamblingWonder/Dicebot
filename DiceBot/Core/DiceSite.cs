@@ -318,6 +318,7 @@ namespace DiceBot.Core
             bool res = InternalSendTip(User, Amount);
             if (res)
             {
+                Parent.updateStatus("Tip " + Amount + " sent to " + User);
                 if (AutoUpdate)
                 {
                     ForceUpdateStats = true;
@@ -327,6 +328,11 @@ namespace DiceBot.Core
                     balance -= amount;
                 }
             }
+            else
+            {
+                Parent.updateStatus("Send Tip " + Amount + " to " + User + " failed!");
+            }
+
             return res;
         }
 

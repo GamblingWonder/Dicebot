@@ -374,7 +374,6 @@
     <Compile Include="Sites\NitroDice.cs" />
     <Compile Include="Sites\NitrogenSports.cs" />
     <Compile Include="Sites\stake\Connector\APIClientManager.cs" />
-    <Compile Include="Sites\stake\StakePD.cs" />
     <Compile Include="Sites\stake\Stake.cs" />
     <Compile Include="Sites\primedice\PrimeDice.cs" />
     <Compile Include="Sites\SatoshiDice.cs" />
@@ -384,7 +383,6 @@
     <Compile Include="SeedInput.Designer.cs">
       <DependentUpon>SeedInput.cs</DependentUpon>
     </Compile>
-    <Compile Include="Sites\stake\StakeOldOld.cs" />
     <Compile Include="StatsForm.cs">
       <SubType>Form</SubType>
     </Compile>

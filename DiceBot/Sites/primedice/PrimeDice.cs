@@ -348,7 +348,7 @@ namespace DiceBot
             this.Currency = "Btc";
             this.Parent = Parent;
             Name = "PrimeDice";
-            this.Tip = false;
+            this.Tip = true;
             this.Vault = true;
             TipUsingName = true;
             //Thread tChat = new Thread(GetMessagesThread);
@@ -852,34 +852,43 @@ namespace DiceBot
             SendTip("WinMachine", Amount);
         }
 
-        public override bool InternalSendTip(string User, decimal amount)
+        public override bool InternalSendTip(string user, decimal amount)
         {
             try
             {
                 //mutation{sendTip(userId:"", amount:0, currency:btc,isPublic:true,chatId:""){id currency amount}}
-                string userid = GetUid(User);
+               
+                string userid = GetUid(user);
+                
                 string chatid = "";
-                string Tippayload = "mutation SendTip($userId: String!, $amount: Float!, $currency: CurrencyEnum!, $isPublic: Boolean, $chatId: String!, $tfaToken: String) {sendTip(userId: $userId, amount: $amount, currency: $currency, isPublic: $isPublic, chatId: $chatId, tfaToken: $tfaToken) { id amount currency user { id name __typename } sendBy { id name balances { available { amount currency __typename } vault { amount currency __typename } __typename } __typename } __typename } }";
-                GraphQLRequest req = new GraphQLRequest();
-                req.Query = Tippayload;
-                req.Variables = new
+                string query = "mutation SendTip($userId: String!, $amount: Float!, $currency: CurrencyEnum!, $isPublic: Boolean, $chatId: String!, $tfaToken: String) {sendTip(userId: $userId, amount: $amount, currency: $currency, isPublic: $isPublic, chatId: $chatId, tfaToken: $tfaToken) { id amount currency user { id name __typename } sendBy { id name balances { available { amount currency __typename } vault { amount currency __typename } __typename } __typename } __typename } }";
+
+                GraphQLRequest req = new GraphQLRequest
                 {
-                    name = User,
-                    amount = amount,
-                    isPublic = true,
-                    userId = userid,
-                    chatId = chatid,
-                    currency = Currency,
-                    tfaToken = (string)null
+                    Query = query,
+                    Variables = new
+                    {
+                        name = user,
+                        amount = amount,
+                        isPublic = true,
+                        userId = userid,
+                        chatId = chatid,
+                        currency = Currency.ToLower(),
+                        tfaToken = (string)null
+                    }
                 };
 
                 //GraphQLResponse Resp = GQLClient.PostAsync(req).Result;
                 var Resp = GQLClient.SendMutationAsync<dynamic>(req).Result;
 
                 return Resp.Data.sendTip.id.Value != null;
+
             }
             catch (Exception e)
             {
+
+                return false;
+                //var r = e;
                 /*if (e.Response != null)
                 {
 
