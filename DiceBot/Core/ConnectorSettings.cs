@@ -111,6 +111,26 @@ namespace DiceBot.Core
             return Cookies;
         }
 
+        public string GetCookieValue(string name)
+        {
+
+            string cookieValue = "";
+
+            if (PersistentCookies != null)
+            {
+                foreach (var item in PersistentCookies)
+                {
+                    if (item.Name.Equals(name))
+                    {
+                        cookieValue = item.Value;
+                        break;
+                    }
+                }
+            }
+
+            return cookieValue;
+        }
+
         public void SetUserAgent(string userAgent)
         {
             UserAgent = userAgent;

@@ -74,8 +74,11 @@ namespace DiceBot
                 {
                     clientseed += chars[R.Next(0, chars.Length)];
                 }
+
+                string csrf_token_value = ConnectorSettings.GetCookieValue("csrf_token");
+
                 string Params = string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "m={0}&client_seed={1}&jackpot=0&stake={2}&multiplier={3}&rand={5}&csrf_token={4}",
-                    High ? "hi" : "lo", clientseed, amount, (100m - edge) / chance, csrf, R.Next(0, 9999999) / 10000000);
+                    High ? "hi" : "lo", clientseed, amount, (100m - edge) / chance, csrf_token_value, R.Next(0, 9999999) / 10000000);
 
                 var betresult = Client.GetAsync("https://freebitco.in/cgi-bin/bet.pl?" + Params).Result;
                 if (betresult.IsSuccessStatusCode)
@@ -384,8 +387,15 @@ namespace DiceBot
             try
             {
 
-
-                if (String.IsNullOrEmpty((string)ConnectorSettings.TryGetPairValue("csrf_token")))
+                var requireAuthorization = true;
+                foreach (Cookie x in ConnectorSettings.GetCookieContainer().GetCookies(new Uri(ConnectorSettings.Site)))
+                {
+                    if (x.Name == "csrf_token")
+                    {                        
+                        requireAuthorization = false;
+                    }
+                }
+                if (requireAuthorization)
                 {
                     InitAuthorizeProcess(ConnectorSettings.Site);
                     return;
@@ -408,7 +418,7 @@ namespace DiceBot
                     }
                     return;
                 }
-
+                /*
                 foreach (Cookie x in ConnectorSettings.GetCookieContainer().GetCookies(new Uri(ConnectorSettings.Site)))
                 {
                     if (x.Name == "csrf_token")
@@ -417,10 +427,11 @@ namespace DiceBot
                         ConnectorSettings.AddCustomPair("csrf_token", csrf);
                     }
                 }
+                */
 
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("csrf_token", ConnectorSettings.TryGetPairValue("csrf_token").ToString()),
+                    new KeyValuePair<string, string>("csrf_token", ConnectorSettings.GetCookieValue("csrf_token")),
                     new KeyValuePair<string, string>("op", "login_new"),
                     new KeyValuePair<string, string>("btc_address", Username),
                     new KeyValuePair<string, string>("password", Password),
