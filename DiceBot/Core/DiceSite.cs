@@ -22,6 +22,27 @@ namespace DiceBot.Core
     {
 
 
+        public class Settings
+        {
+            public bool AutoWithdraw { get; set; }
+            public bool AutoInvest { get; set; }
+            public bool ChangeSeed { get; set; }
+            public bool AutoLogin { get; set; }
+            public bool Tip { get; set; }
+            public bool Vault { get; set; }
+            public bool TipUsingName { get; set; }
+            public bool GettingSeed { get; set; }
+            public bool ForceUpdateStats = false;
+            public bool AutoUpdate = true;
+        }
+
+        public class Statistics { }
+
+
+
+        public ConnectorSettings ConnectorSettings { get; set; }
+
+
         //AuthorizationCompletedEventArgs
         public event EventHandler<AuthorizationCompletedEventArgs> OnAuthorizationCompleted;
 
@@ -98,16 +119,14 @@ namespace DiceBot.Core
             set { currency = value; CurrencyChanged(); }
         }
 
-
         protected virtual void CurrencyChanged() { }
 
+
+
         protected cDiceBot Parent;
-        public bool AutoWithdraw { get; set; }
-        public bool AutoInvest { get; set; }
-        public bool ChangeSeed { get; set; }
-        public bool AutoLogin { get; set; }
+
+
         public decimal edge = 1;
-        public string Name { get; protected set; }
         public decimal chance = 0;
         public decimal amount = 0;
         public decimal balance { get; protected set; }
@@ -119,10 +138,16 @@ namespace DiceBot.Core
         protected decimal siteprofit = 0;
         protected bool High = false;
         public string BetURL = "";
+
+
+
+        public bool AutoWithdraw { get; set; }
+        public bool AutoInvest { get; set; }
+        public bool ChangeSeed { get; set; }
+        public bool AutoLogin { get; set; }
+        public string Name { get; protected set; }
         public bool Tip { get; set; }
-
         public bool Vault { get; set; }
-
         public bool TipUsingName { get; set; }
         public bool GettingSeed { get; set; }
         public bool ForceUpdateStats = false;
@@ -162,13 +187,15 @@ namespace DiceBot.Core
             //URL = url;
         }
 
-     
+
 
         public void PlaceBet(bool High, decimal amount, decimal chance, string BetGuid)
         {
             Parent.updateStatus(string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "Betting: {0:0.00000000} at {1:0.00000000} {2}", amount, chance, High ? "High" : "Low"));
             internalPlaceBet(High, amount, chance, BetGuid);
         }
+
+
         protected void FinishedBet(Bet newBet)
         {
             Parent.updateBalance(balance);
@@ -179,20 +206,24 @@ namespace DiceBot.Core
             Parent.updateWins(wins);
             Parent.AddBet(newBet);
             Parent.GetBetResult(balance, newBet);
-
         }
+
         protected abstract void internalPlaceBet(bool High, decimal amount, decimal chancem, string BetGuid);
+
         public abstract void ResetSeed(string customClientSeed = "");
+
         public abstract void SetClientSeed(string Seed);
+
         public virtual bool Invest(decimal Amount)
         {
             return true;
-
         }
+
         public virtual void Donate(decimal Amount)
         {
 
         }
+
         public bool Withdraw(decimal Amount, string Address)
         {
             Parent.updateStatus(string.Format(System.Globalization.NumberFormatInfo.InvariantInfo, "Withdrawing {0} {1} to {2}", Amount, currency, Address));
@@ -418,9 +449,7 @@ namespace DiceBot.Core
     {
 
         public string UserAgent { get; set; }
-        public CookieCollection Cookies3 { get; set; }
-        public List<CefSharp.Cookie> Cookies1 { get;  set; }
-        public List<CefSharp.Cookie> Cookies2 { get;  set; }
+        public List<CefSharp.Cookie> Cookies { get; set; }
     }
 
     public class RequireCaptchaEventArgs : EventArgs

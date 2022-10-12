@@ -38,7 +38,7 @@ namespace DiceBot
 
             var getUserAgentScript = @"(function () { return navigator.userAgent;})();";
 
-            var ddd = chromiumWebBrowser1.GetCookieManager().VisitAllCookiesAsync().Result;
+            var cookies = chromiumWebBrowser1.GetCookieManager().VisitAllCookiesAsync().Result;
 
             var agent = await chromiumWebBrowser1.GetMainFrame().EvaluateScriptAsync(getUserAgentScript).ContinueWith(t =>
             {
@@ -48,7 +48,7 @@ namespace DiceBot
             var args = new AuthorizationCompletedEventArgs()
             {
                 UserAgent = agent,
-                Cookies1 = ddd
+                Cookies = cookies
             };
 
             (this.Owner as IAuthorizationHub).OnAuthorizationCompleted(this, args);
@@ -59,7 +59,7 @@ namespace DiceBot
 
         private void reloadBtn_Click(object sender, EventArgs e)
         {
-            chromiumWebBrowser1.GetBrowser().ShowDevTools();
+           // chromiumWebBrowser1.GetBrowser().ShowDevTools();
         }
 
         private void goBtn_Click(object sender, EventArgs e)

@@ -374,6 +374,7 @@
     <Compile Include="Sites\NitroDice.cs" />
     <Compile Include="Sites\NitrogenSports.cs" />
     <Compile Include="Sites\stake\Connector\APIClientManager.cs" />
+    <Compile Include="Core\ConnectorSettings.cs" />
     <Compile Include="Sites\stake\Stake.cs" />
     <Compile Include="Sites\primedice\PrimeDice.cs" />
     <Compile Include="Sites\SatoshiDice.cs" />

@@ -1,5 +1,6 @@
 ﻿using Connectors.Stake.Response;
 using DiceBot;
+using DiceBot.Core;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -345,34 +346,23 @@ namespace Connectors.Stake.Response
 namespace Connectors.Stake
 {
 
-    public class ClientSettings
+    public class ClientSettings : ConnectorSettings
     {
 
-        public enum Connection
-        {
-            DEFAULT,
-            WSS
-        }
 
-        public Connection Mode { get; set; } = ClientSettings.Connection.DEFAULT;
 
-        public List<Cookie> PersistentCookies { get; private set; }
-
-        public string Site { get; set; }
-        public string ApiKey { get; set; }
         public string ApiEndPoint { get; set; }
+
         public string WebSocketEndPoint { get; set; }
+
         public string GraphQLEndPoint { get; set; }
-        public string Referrer { get; set; }
-        public int Timeout { get; set; } = 1000;
-        public string UserAgent { get; private set; } = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36";
 
         public string SiteFormat { get; set; } = "https://{0}";
 
         public string EndpointFormat { get; set; } = "https://{0}";
 
 
-        public void Update(string site = "", string apiKey = "")
+        public override void Update(string site = "", string apiKey = "")
         {
 
             if (!string.IsNullOrEmpty(site))
@@ -407,24 +397,11 @@ namespace Connectors.Stake
 
 
 
-        public ClientSettings()
+        public ClientSettings() : base()
         {
         }
 
-        public ClientSettings(string site, string apiKey)
-        {
-            Update(site, apiKey);
-        }
 
-        public void SetCookies(List<Cookie> cc0)
-        {
-            PersistentCookies = cc0;
-        }
-
-        public void SetUserAgent(string userAgent)
-        {
-            UserAgent = userAgent;
-        }
 
     }
 

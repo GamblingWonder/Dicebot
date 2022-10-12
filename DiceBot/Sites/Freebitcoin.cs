@@ -26,24 +26,37 @@ namespace DiceBot
         HttpClient Client;
         HttpClientHandler ClientHandlr;
         DBRandom R = new DBRandom();
+
         public Freebitcoin(cDiceBot Parent)
         {
+
+
+
+            ConnectorSettings = new ConnectorSettings();
+
+
             _UsernameText = "Email:";
             _PasswordText = "Password: ";
+
             maxRoll = 100m;
             AutoInvest = false;
             AutoWithdraw = false;
             ChangeSeed = false;
             AutoLogin = false;
-            BetURL = "https://freebitco.in/?r=2310118&bet=";
+            BetURL = "https://freebitco.in/?r=12980797&bet=";
             edge = 5m;
+
             this.Parent = Parent;
+
             Name = "FreeBitcoin";
+
             Tip = false;
             TipUsingName = true;
-            //Thread tChat = new Thread(GetMessagesThread);
-            //tChat.Start();
-            SiteURL = "https://freebitco.in/?r=2310118";
+
+            SiteURL = "https://freebitco.in/?r=12980797";
+
+
+            ConnectorSettings.Site = "https://freebitco.in";
 
         }
 
@@ -113,12 +126,19 @@ namespace DiceBot
                             serverhash = msgs[10],
                             serverseed = msgs[9],
                             Roll = decimal.Parse(msgs[2], System.Globalization.NumberFormatInfo.InvariantInfo) / 100.0m
-
                         };
+
                         balance = decimal.Parse(msgs[3], System.Globalization.NumberFormatInfo.InvariantInfo);
+
                         if (msgs[1] == "w")
+                        {
                             wins++;
-                        else losses++;
+                        }
+                        else
+                        {
+                            losses++;
+                        }
+
                         bets++;
                         wagered += amount;
                         profit += tmp.Profit;
@@ -129,7 +149,6 @@ namespace DiceBot
                     {
                         //20 - too low balance
                         if (msgs.Length > 1)
-
                         {
                             if (msgs[1] == "20")
                             {
@@ -255,20 +274,127 @@ namespace DiceBot
         {
             throw new NotImplementedException();
         }
-        CookieContainer Cookies = new CookieContainer();
+
+
+
+
         string csrf = "";
         string address = "";
+
+
+        public override void AuthorizationCompleted(AuthorizationCompletedEventArgs e)
+        {
+
+            base.AuthorizationCompleted(e);
+
+            foreach (var item in e.Cookies)
+            {
+                if (item.Name.Equals(CookiesHelper.CloudflareCookieName))
+                {
+                    var ClearanceCookie = new Cookie()
+                    {
+                        Name = CookiesHelper.CloudflareCookieName,
+                        Value = item.Value,
+                        Domain = item.Domain,
+                        Path = "/",
+                        Expired = false,
+                        Secure = true,
+                        Expires = item.Expires.Value,
+                        HttpOnly = false
+                    };
+                    ConnectorSettings.AddCookie(ClearanceCookie);
+                }
+                else
+                {
+                    var cookie = new Cookie()
+                    {
+                        Name = item.Name,
+                        Value = item.Value,
+                        Domain = item.Domain,
+                        Path = "/",//item.Path,
+                        Expired = false,
+                        Secure = item.Secure,
+                        Expires = item.Expires?? DateTime.Now.AddYears(1),
+                        HttpOnly = item.HttpOnly
+                    };
+                    ConnectorSettings.AddCookie(cookie);
+                }
+            }
+
+            ConnectorSettings.SetUserAgent(e.UserAgent);
+
+            Login(ConnectorSettings.LoginData.Username, ConnectorSettings.LoginData.Password, ConnectorSettings.LoginData.TwoFA);
+
+        }
+
+        AuthorizeBrowser authorizeBrowser;
+
+        private void InitAuthorizeProcess(string url)
+        {
+
+            // ------------------------------------------------------
+            // The connection require manual authorization
+            // ------------------------------------------------------
+
+            // Open AuthorizeBrowser window
+            // the user do the validation
+            // after validation, he press continue
+            // we pick the cookies and save it for future requests
+
+            // ------------------------------------------------------
+
+            authorizeBrowser = new AuthorizeBrowser
+            {
+                StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen,
+                TargetUrl = url
+            };
+
+            authorizeBrowser.Show(this.Parent);
+            authorizeBrowser.FormClosed += (s, e) =>
+            {
+                authorizeBrowser.Dispose();
+            };
+
+        }
+
         public override void Login(string Username, string Password, string twofa)
         {
-            ClientHandlr = new HttpClientHandler { UseCookies = true, AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip, Proxy = this.Prox, UseProxy = Prox != null };
-            Client = new HttpClient(ClientHandlr) { BaseAddress = new Uri("https://freebitco.in/") };
+
+            ConnectorSettings.AddLoginData(Username, "", Password, twofa);
+
+            ClientHandlr = new HttpClientHandler
+            {
+                UseCookies = true,
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                Proxy = this.Prox,
+                UseProxy = Prox != null
+            };
+
+            Client = new HttpClient(ClientHandlr)
+            {
+                BaseAddress = new Uri(ConnectorSettings.Site)
+            };
+
+            // ConnectorSettings.UserAgent
+
             Client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("gzip"));
             Client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("deflate"));
-            ClientHandlr.CookieContainer = Cookies;
+            ClientHandlr.CookieContainer = ConnectorSettings.GetCookieContainer();
+
             try
             {
+
+
+                if (String.IsNullOrEmpty((string)ConnectorSettings.TryGetPairValue("csrf_token")))
+                {
+                    InitAuthorizeProcess(ConnectorSettings.Site);
+                    return;
+                }
+
                 string s1 = "";
+
                 HttpResponseMessage resp = Client.GetAsync("").Result;
+
                 if (resp.IsSuccessStatusCode)
                 {
                     s1 = resp.Content.ReadAsStringAsync().Result;
@@ -277,53 +403,61 @@ namespace DiceBot
                 {
                     if (resp.StatusCode == HttpStatusCode.ServiceUnavailable)
                     {
-                        s1 = resp.Content.ReadAsStringAsync().Result;
-                        //cflevel = 0;
-                        System.Threading.Tasks.Task.Factory.StartNew(() =>
-                        {
-                            System.Windows.Forms.MessageBox.Show("freebitcoin has their cloudflare protection on HIGH\n\nThis will cause a slight delay in logging in. Please allow up to a minute.");
-                        });
-                        if (!Cloudflare.doCFThing(s1, Client, ClientHandlr, 0, "freebitco.in"))
-                        {
-
-                            finishedlogin(false);
-                            return;
-                        }
-
+                        InitAuthorizeProcess(ConnectorSettings.Site);
+                        return;
                     }
+                    return;
                 }
-                foreach (Cookie x in Cookies.GetCookies(new Uri("https://freebitco.in")))
+
+                foreach (Cookie x in ConnectorSettings.GetCookieContainer().GetCookies(new Uri(ConnectorSettings.Site)))
                 {
                     if (x.Name == "csrf_token")
                     {
                         csrf = x.Value;
+                        ConnectorSettings.AddCustomPair("csrf_token", csrf);
                     }
                 }
-                List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
-                pairs.Add(new KeyValuePair<string, string>("csrf_token", csrf));
-                pairs.Add(new KeyValuePair<string, string>("op", "login_new"));
-                pairs.Add(new KeyValuePair<string, string>("btc_address", Username));
-                pairs.Add(new KeyValuePair<string, string>("password", Password));
-                pairs.Add(new KeyValuePair<string, string>("tfa_code", twofa));
+
+                List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("csrf_token", ConnectorSettings.TryGetPairValue("csrf_token").ToString()),
+                    new KeyValuePair<string, string>("op", "login_new"),
+                    new KeyValuePair<string, string>("btc_address", Username),
+                    new KeyValuePair<string, string>("password", Password),
+                    new KeyValuePair<string, string>("tfa_code", twofa)
+                };
+
                 FormUrlEncodedContent Content = new FormUrlEncodedContent(pairs);
+
                 var EmitResponse = Client.PostAsync("" + accesstoken, Content).Result;
 
                 if (EmitResponse.IsSuccessStatusCode)
                 {
+
                     string s = EmitResponse.Content.ReadAsStringAsync().Result;
                     string[] messages = s.Split(':');
+
                     if (messages.Length > 2)
                     {
+
                         address = messages[1];
                         accesstoken = messages[2];
-                        Cookies.Add(new Cookie("btc_address", address, "/", "freebitco.in"));
-                        Cookies.Add(new Cookie("password", accesstoken, "/", "freebitco.in"));
-                        Cookies.Add(new Cookie("have_account", "1", "/", "freebitco.in"));
+
+                        ConnectorSettings.PersistentCookies.Add(new Cookie("btc_address", address, "/", "freebitco.in"));
+                        ConnectorSettings.PersistentCookies.Add(new Cookie("password", accesstoken, "/", "freebitco.in"));
+                        ConnectorSettings.PersistentCookies.Add(new Cookie("have_account", "1", "/", "freebitco.in"));
+
+                        //Cookies.Add(new Cookie("btc_address", address, "/", "freebitco.in"));
+                        //Cookies.Add(new Cookie("password", accesstoken, "/", "freebitco.in"));
+                        //Cookies.Add(new Cookie("have_account", "1", "/", "freebitco.in"));
 
                         s = Client.GetStringAsync("https://freebitco.in/cgi-bin/api.pl?op=get_user_stats").Result;
+
                         FreebtcStats stats = json.JsonDeserialize<FreebtcStats>(s);
+
                         if (stats != null)
                         {
+
                             this.balance = stats.balance / 100000000m;
                             bets = (int)stats.rolls_played;
                             wins = losses = 0;
@@ -341,26 +475,134 @@ namespace DiceBot
                             t.Start();
                             finishedlogin(true);
                             return;
+
                         }
+
                         finishedlogin(false);
                         return;
 
                     }
+
                     finishedlogin(false);
                     return;
+
                 }
-
-
-                //Lastbet = DateTime.Now;
 
             }
             catch (Exception e)
             {
                 Parent.DumpLog(e.ToString(), 1);
             }
+
             finishedlogin(false);
             return;
+
         }
+
+        //public void Login2(string Username, string Password, string twofa)
+        //{
+        //    ClientHandlr = new HttpClientHandler
+        //    {
+        //        UseCookies = true,
+        //        AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+        //        Proxy = this.Prox,
+        //        UseProxy = Prox != null
+        //    };
+        //    Client = new HttpClient(ClientHandlr)
+        //    {
+        //        BaseAddress = new Uri("https://freebitco.in/")
+        //    };
+        //    Client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("gzip"));
+        //    Client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("deflate"));
+        //    ClientHandlr.CookieContainer = Cookies;
+        //    try
+        //    {
+        //        string s1 = "";
+        //        HttpResponseMessage resp = Client.GetAsync("").Result;
+        //        if (resp.IsSuccessStatusCode)
+        //        {
+        //            s1 = resp.Content.ReadAsStringAsync().Result;
+        //        }
+        //        else
+        //        {
+        //            if (resp.StatusCode == HttpStatusCode.ServiceUnavailable)
+        //            {
+        //                s1 = resp.Content.ReadAsStringAsync().Result;
+        //                //cflevel = 0;
+        //                System.Threading.Tasks.Task.Factory.StartNew(() =>
+        //                {
+        //                    System.Windows.Forms.MessageBox.Show("freebitcoin has their cloudflare protection on HIGH\n\nThis will cause a slight delay in logging in. Please allow up to a minute.");
+        //                });
+        //                if (!Cloudflare.doCFThing(s1, Client, ClientHandlr, 0, "freebitco.in"))
+        //                {
+        //                    finishedlogin(false);
+        //                    return;
+        //                }
+        //            }
+        //        }
+        //        foreach (Cookie x in Cookies.GetCookies(new Uri("https://freebitco.in")))
+        //        {
+        //            if (x.Name == "csrf_token")
+        //            {
+        //                csrf = x.Value;
+        //            }
+        //        }
+        //        List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
+        //        pairs.Add(new KeyValuePair<string, string>("csrf_token", csrf));
+        //        pairs.Add(new KeyValuePair<string, string>("op", "login_new"));
+        //        pairs.Add(new KeyValuePair<string, string>("btc_address", Username));
+        //        pairs.Add(new KeyValuePair<string, string>("password", Password));
+        //        pairs.Add(new KeyValuePair<string, string>("tfa_code", twofa));
+        //        FormUrlEncodedContent Content = new FormUrlEncodedContent(pairs);
+        //        var EmitResponse = Client.PostAsync("" + accesstoken, Content).Result;
+        //        if (EmitResponse.IsSuccessStatusCode)
+        //        {
+        //            string s = EmitResponse.Content.ReadAsStringAsync().Result;
+        //            string[] messages = s.Split(':');
+        //            if (messages.Length > 2)
+        //            {
+        //                address = messages[1];
+        //                accesstoken = messages[2];
+        //                Cookies.Add(new Cookie("btc_address", address, "/", "freebitco.in"));
+        //                Cookies.Add(new Cookie("password", accesstoken, "/", "freebitco.in"));
+        //                Cookies.Add(new Cookie("have_account", "1", "/", "freebitco.in"));
+        //                s = Client.GetStringAsync("https://freebitco.in/cgi-bin/api.pl?op=get_user_stats").Result;
+        //                FreebtcStats stats = json.JsonDeserialize<FreebtcStats>(s);
+        //                if (stats != null)
+        //                {
+        //                    this.balance = stats.balance / 100000000m;
+        //                    bets = (int)stats.rolls_played;
+        //                    wins = losses = 0;
+        //                    profit = stats.dice_profit / 100000000m;
+        //                    wagered = stats.wagered / 100000000m;
+        //                    Parent.updateBalance(balance);
+        //                    Parent.updateBets(bets);
+        //                    Parent.updateWins(wins);
+        //                    Parent.updateLosses(losses);
+        //                    Parent.updateWagered(wagered);
+        //                    Parent.updateProfit(profit);
+        //                    lastupdate = DateTime.Now;
+        //                    ispd = true;
+        //                    Thread t = new Thread(GetBalanceThread);
+        //                    t.Start();
+        //                    finishedlogin(true);
+        //                    return;
+        //                }
+        //                finishedlogin(false);
+        //                return;
+        //            }
+        //            finishedlogin(false);
+        //            return;
+        //        }
+        //        //Lastbet = DateTime.Now;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Parent.DumpLog(e.ToString(), 1);
+        //    }
+        //    finishedlogin(false);
+        //    return;
+        //}
 
         public override bool Register(string username, string password)
         {
@@ -375,7 +617,6 @@ namespace DiceBot
         public override void Disconnect()
         {
             ispd = false;
-
         }
 
         public override void GetSeed(long BetID)
@@ -387,7 +628,9 @@ namespace DiceBot
         {
             throw new NotImplementedException();
         }
+
     }
+
     public class FreebtcStats
     {
         public long wagered { get; set; }

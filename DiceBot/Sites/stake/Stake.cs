@@ -212,7 +212,7 @@ namespace DiceBot
 
             var cookies = new List<Cookie>();
 
-            foreach (var item in e.Cookies1)
+            foreach (var item in e.Cookies)
             {
                 if (item.Name.Equals(CookiesHelper.CloudflareCookieName))
                 {
