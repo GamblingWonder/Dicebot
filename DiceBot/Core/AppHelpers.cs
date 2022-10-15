@@ -23,7 +23,7 @@ namespace DiceBot
         {
             get
             {
-                return AppName + " [" + AppVersion + "] PREVIEW";
+                return AppName + " [" + AppVersion + "]";
             }
         }
 
