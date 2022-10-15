@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Web;
 using System.Net;
 using System.IO;
+using DiceBot.Core.Connectors;
 
 namespace DiceBot.Core
 {
@@ -153,13 +154,17 @@ namespace DiceBot.Core
         public bool ForceUpdateStats = false;
         public bool AutoUpdate = true;
 
-
+        public string SiteDomain { get; set; }
         public bool HaveMirrors { get; set; } = false;
         public List<string> MirrorList { get; set; }
 
         public string CurrentMirror { get; set; }
 
         public CustomSeed CustomSeed { get; set; } = new CustomSeed() { IsCustom = false };
+
+        public TimeSpan ThreadBalanceStep { get; set; } = TimeSpan.FromSeconds(1);
+        public TimeSpan ThreadBetStep { get; set; } = TimeSpan.FromMilliseconds(250);
+
 
         public int GetWins()
         {

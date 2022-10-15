@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Noesis.Javascript;
+//using Noesis.Javascript;
 using System.Threading;
 using System.Net.Http;
 using System.Net;
@@ -15,7 +15,7 @@ namespace DiceBot
         public static bool doCFThing(string Response, HttpClient Client, HttpClientHandler ClientHandlr, int cflevel, string URI)
         {
             Thread.Sleep(4000);
-            JavascriptContext JSC = new JavascriptContext();
+           /* JavascriptContext JSC = new JavascriptContext();
 
             string s1 = Response;//new StreamReader(Response.GetResponseStream()).ReadToEnd();
             string Script = "";
@@ -78,7 +78,6 @@ namespace DiceBot
                 //Content.Headers.Add("Referer", "https://wolf.bet/");
                 Content.Headers.Add("sec-fetch-mode", "navigate");
                 Content.Headers.Add("sec-fetch-site", "same-origin");
-                //Content.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
                 Content.Headers.Remove("content-type");
                 Content.Headers.Add("content-type", "application/x-www-form-urlencoded");
                 HttpResponseMessage Resp = Client.PostAsync(url, Content).Result;
@@ -93,11 +92,7 @@ namespace DiceBot
                         break;
                     }
                 }
-                /*if (ClientHandlr.CookieContainer.Count==3)
-                {
-                    Thread.Sleep(2000);
-                }*/
-                if ((!Found /*|| Resp.StatusCode== HttpStatusCode.Forbidden*/ ) && cflevel++ < 5)
+                if ((!Found ) && cflevel++ < 5)
                 {
                     Found = doCFThing(Resp.Content.ReadAsStringAsync().Result, Client, ClientHandlr, cflevel, URI);
                 }
@@ -110,9 +105,7 @@ namespace DiceBot
             }
             catch (AggregateException e)
             {
-                /*Parent.DumpLog(e.InnerException.Message, 3);
-                Parent.DumpLog(e.InnerException.StackTrace, 4);*/
-            }
+            }*/
             return false;
         }
     }

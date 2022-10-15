@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.props')" />
-  <Import Project="..\packages\cef.redist.x86.105.3.39\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.105.3.39\build\cef.redist.x86.props')" />
-  <Import Project="..\packages\cef.redist.x64.105.3.39\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.105.3.39\build\cef.redist.x64.props')" />
+  <Import Project="..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.props')" />
+  <Import Project="..\packages\cef.redist.x86.106.0.26\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.106.0.26\build\cef.redist.x86.props')" />
+  <Import Project="..\packages\cef.redist.x64.106.0.26\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.106.0.26\build\cef.redist.x64.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -72,11 +72,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>E10D9A30C7D396048C0CA499F0773A605A131811</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>762E7443118264066A4CDFBEBA0DA6ECD5618C70</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>
-    </ManifestKeyFile>
+    <ManifestKeyFile>DiceBot.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -131,23 +130,20 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Dicebot_temp.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Dicebot.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>DiceBot.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoUpdater.NET, Version=1.7.5.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autoupdater.NET.Official.1.7.5\lib\net45\AutoUpdater.NET.dll</HintPath>
+    <Reference Include="CefSharp, Version=106.0.260.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>..\packages\CefSharp.Common.106.0.260\lib\net452\CefSharp.dll</HintPath>
     </Reference>
-    <Reference Include="CefSharp, Version=105.3.390.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
-      <HintPath>..\packages\CefSharp.Common.105.3.390\lib\net452\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp.Core, Version=106.0.260.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>..\packages\CefSharp.Common.106.0.260\lib\net452\CefSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="CefSharp.Core, Version=105.3.390.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
-      <HintPath>..\packages\CefSharp.Common.105.3.390\lib\net452\CefSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CefSharp.WinForms, Version=105.3.390.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
-      <HintPath>..\packages\CefSharp.WinForms.105.3.390\lib\net462\CefSharp.WinForms.dll</HintPath>
+    <Reference Include="CefSharp.WinForms, Version=106.0.260.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>..\packages\CefSharp.WinForms.106.0.260\lib\net462\CefSharp.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="ClearScript.V8.ICUData, Version=7.3.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ClearScript.V8.ICUData.7.3.4\lib\netstandard1.0\ClearScript.V8.ICUData.dll</HintPath>
@@ -176,22 +172,13 @@
     <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.4.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.4.3\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.1.0.0\lib\netstandard1.1\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.Web.WebView2.Core, Version=1.0.1343.22, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1343.22\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms, Version=1.0.1343.22, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1343.22\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf, Version=1.0.1343.22, Culture=neutral, PublicKeyToken=2a8ab48044d2601e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.WebView2.1.0.1343.22\lib\net45\Microsoft.Web.WebView2.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="NBitcoin, Version=7.0.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NBitcoin.7.0.11\lib\net472\NBitcoin.dll</HintPath>
     </Reference>
@@ -224,8 +211,8 @@
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Linq" />
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
@@ -279,11 +266,11 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Encodings.Web, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encodings.Web.5.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Json, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.5.0.0\lib\net461\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=6.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.6.0.6\lib\net461\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
@@ -336,6 +323,9 @@
       <DependentUpon>BetHistory.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\AppHelpers.cs" />
+    <Compile Include="Core\Connectors\ClientSettings.cs" />
+    <Compile Include="Core\Connectors\ConnectorClientManagerBase.cs" />
+    <Compile Include="Core\Connectors\GenericConnector.cs" />
     <Compile Include="Core\CookiesHelper.cs" />
     <Compile Include="Core\GameEngine.cs" />
     <Compile Include="Core\IDiceSite.cs" />
@@ -373,8 +363,13 @@
     </Compile>
     <Compile Include="Sites\NitroDice.cs" />
     <Compile Include="Sites\NitrogenSports.cs" />
-    <Compile Include="Sites\stake\Connector\APIClientManager.cs" />
-    <Compile Include="Core\ConnectorSettings.cs" />
+    <Compile Include="Sites\primedice\PrimeDiceConnector.cs" />
+    <Compile Include="Core\RequestPayload.cs" />
+    <Compile Include="Core\CloudflareRequiredException.cs" />
+    <Compile Include="Core\ConnectorHelpers.cs" />
+    <Compile Include="Sites\primedice\PrimeDiceGraphql.cs" />
+    <Compile Include="Sites\stake\Shema.cs" />
+    <Compile Include="Core\Connectors\ConnectorSettings.cs" />
     <Compile Include="Sites\stake\Stake.cs" />
     <Compile Include="Sites\primedice\PrimeDice.cs" />
     <Compile Include="Sites\SatoshiDice.cs" />
@@ -384,6 +379,7 @@
     <Compile Include="SeedInput.Designer.cs">
       <DependentUpon>SeedInput.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sites\stake\StakeConnector.cs" />
     <Compile Include="StatsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -626,9 +622,7 @@
       <DependentUpon>Verify.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="dicebot_2022.pfx" />
-    <None Include="Dicebot_temp.pfx" />
-    <None Include="DiceBot_TemporaryKey.pfx" />
+    <None Include="DiceBot.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Bet.datasource" />
     <None Include="Properties\DataSources\cBet.datasource" />
@@ -687,6 +681,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\" />
+    <Folder Include="Sites\stake\Connector\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -697,12 +692,12 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1343.22\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1343.22\build\Microsoft.Web.WebView2.targets'))" />
     <Error Condition="!Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
-    <Error Condition="!Exists('..\packages\cef.redist.x64.105.3.39\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.105.3.39\build\cef.redist.x64.props'))" />
-    <Error Condition="!Exists('..\packages\cef.redist.x86.105.3.39\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.105.3.39\build\cef.redist.x86.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x64.106.0.26\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.106.0.26\build\cef.redist.x64.props'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x86.106.0.26\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.106.0.26\build\cef.redist.x86.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets'))" />
   </Target>
   <!--
 
@@ -741,7 +736,7 @@
         ]]></Code>
     </Task>
   </UsingTask>
-  <Target Name="PrepareDeployPackage" AfterTargets="Build">
+  <Target Name="PrepareDeployPackage" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' ">
     <GetFileVersion AssemblyPath="$(TargetPath)">
       <Output TaskParameter="Version" PropertyName="MyAssemblyFileVersion" />
     </GetFileVersion>
@@ -757,9 +752,9 @@
     xcopy /s /y "$(SolutionDir)packages\Noesis.Javascript.0.7.1.0\NativeBinaries\net40\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1343.22\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1343.22\build\Microsoft.Web.WebView2.targets')" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
-  <Import Project="..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.105.3.390\build\CefSharp.Common.targets')" />
+  <Import Project="..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.106.0.260\build\CefSharp.Common.targets')" />
+  <Import Project="..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

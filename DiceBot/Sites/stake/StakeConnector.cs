@@ -1,484 +1,27 @@
 ﻿using Connectors.Stake.Response;
-using DiceBot;
+using Dicebot.Core;
 using DiceBot.Core;
+using DiceBot.Core.Connectors;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using static DiceBot.PDStake;
 
-namespace Connectors.Stake.Response
-{
-
-    public class betBase
-    {
-        public string id { get; set; }
-        public string iid { get; set; }
-
-    }
-
-    #region ROULETTE
-
-    public partial class State
-    {
-        public List<Values> colors { get; set; }
-        public List<Values> numbers { get; set; }
-        public List<Values> parities { get; set; }
-        public List<Values> ranges { get; set; }
-        public List<Values> rows { get; set; }
-
-    }
-
-    public partial class Values
-    {
-        public string value { get; set; }
-        public decimal amount { get; set; }
-    }
-
-    public class rouletteBet : betBase
-    {
-        public string id { get; set; }
-        public string iid { get; set; }
-        public double payoutMultiplier { get; set; }
-        public decimal amount { get; set; }
-        public decimal payout { get; set; }
-        public string updatedAt { get; set; }
-        public string currency { get; set; }
-        public string game { get; set; }
-        public Active user { get; set; }
-        public State state { get; set; }
-    }
-
-    #endregion
-
-    #region KENO
-
-    public partial class kenoBet : betBase
-    {
-        public string id { get; set; }
-        public string iid { get; set; }
-        public double payoutMultiplier { get; set; }
-        public decimal amount { get; set; }
-        public decimal payout { get; set; }
-        public string updatedAt { get; set; }
-        public string currency { get; set; }
-        public Active user { get; set; }
-        public State state { get; set; }
-    }
-
-    #endregion
-
-    #region LIMBO
-
-    public partial class limboBet : betBase
-    {
-        public string id { get; set; }
-        public string iid { get; set; }
-        public double payoutMultiplier { get; set; }
-        public decimal amount { get; set; }
-        public decimal payout { get; set; }
-        public string updatedAt { get; set; }
-        public string currency { get; set; }
-        public string game { get; set; }
-        public Active user { get; set; }
-        public State state { get; set; }
-    }
-
-    #endregion
-
-
-    #region DICE
-
-    public class diceBet : betBase
-    {
-
-    }
-
-    #endregion
-
-    public class RequestPayload
-    {
-        public string operationName { get; set; }
-
-        public string query { get; set; }
-
-        public object variables { get; set; }
-
-        public string identifier { get; set; }
-
-        public RequestPayload()
-        {
-
-        }
-
-    }
-
-    public partial class BetQuery
-    {
-        public string operationName { get; set; }
-        public string query { get; set; }
-        public BetClass variables { get; set; }
-    }
-
-    public partial class BetClass
-    {
-        public string identifier { get; set; }
-        public decimal amount { get; set; }
-        public decimal target { get; set; }
-        public string currency { get; set; }
-        public string game { get; set; }
-        public string guess { get; set; }
-        public int minesCount { get; set; }
-        public List<int> fields { get; set; }
-        public string seed { get; set; }
-        public string risk { get; set; }
-        public List<int> numbers { get; set; }
-        public double multiplierTarget { get; set; }
-
-        public string condition { get; set; }
-    }
-
-    public partial class Card
-    {
-        public string rank { get; set; }
-        public string suit { get; set; }
-    }
-
-    public partial class Data
-    {
-        public availableBalances availableBalances { get; set; }
-        public chatMessages chatMessages { get; set; }
-        public crash crash { get; set; }
-        public Betdata data { get; set; }
-        public List<Errors> errors { get; set; }
-    }
-
-    public class Errors
-    {
-        public List<string> path { get; set; }
-        public string message { get; set; }
-        public string errorType { get; set; }
-        public string data { get; set; }
-    }
-
-    public partial class ActiveData
-    {
-        public User data { get; set; }
-        public List<Errors> errors { get; set; }
-    }
-
-    public partial class User
-    {
-        public Active user { get; set; }
-    }
-
-    public partial class Active
-    {
-        public string id { get; set; }
-        public string name { get; set; }
-        public limboBet activeCasinoBet { get; set; }
-        public List<Balances> balances { get; set; }
-    }
-
-    public partial class Balances
-    {
-        public Available available { get; set; }
-    }
-
-    public partial class Available
-    {
-        public decimal amount { get; set; }
-        public string currency { get; set; }
-    }
-
-    public partial class Betdata
-    {
-        public limboBet limboBet { get; set; }
-        public kenoBet kenoBet { get; set; }
-        public rouletteBet rouletteBet { get; set; }
-        public object rotateSeedPair { get; set; }
-        public object createVaultDeposit { get; set; }
-    }
-
-    public partial class State
-    {
-        public List<int> drawnNumbers { get; set; }
-        public List<int> selectedNumbers { get; set; }
-        public double result { get; set; }
-        public double multiplierTarget { get; set; }
-
-    }
-
-    public partial class Rounds
-    {
-        public int field { get; set; }
-        public double payoutMultiplier { get; set; }
-    }
-
-    public partial class BalancesData
-    {
-        public User data { get; set; }
-        public List<Errors> errors { get; set; }
-    }
-
-    public partial class messageData
-    {
-        public messageData() => this.payload = new messagePayload();
-
-        public string id { get; set; }
-
-        public string type { get; set; }
-
-        public messagePayload payload { get; set; }
-    }
-    public partial class messageErrors
-    {
-        public messageErrors() => this.message = (string)null;
-
-        public string[] path { get; set; }
-
-        public string message { get; set; }
-    }
-
-    public partial class ChatInputs
-    {
-        public ChatInputs()
-        {
-
-        }
-    }
-
-    public partial class context
-    {
-        public string url { get; set; }
-    }
-
-    public partial class chatMessages
-    {
-        public string id { get; set; }
-        public ChatData data { get; set; }
-        public ChatUser user { get; set; }
-    }
-
-    public partial class ChatData
-    {
-        public string message { get; set; }
-    }
-
-    public partial class ChatUser
-    {
-        public string name { get; set; }
-    }
-
-    public partial class availableBalances
-    {
-        public decimal amount { get; set; }
-        public Balance balance { get; set; }
-    }
-
-    public partial class Balance
-    {
-        public decimal amount { get; set; }
-        public string currency { get; set; }
-    }
-
-    public partial class crash
-    {
-        public Event @event { get; set; }
-    }
-
-    public partial class Event
-    {
-        public string id { get; set; }
-        public string status { get; set; }
-        public object multiplier { get; set; }
-        public string startTime { get; set; }
-        public object nextRoundIn { get; set; }
-        public int elapsed { get; set; }
-        public string timestamp { get; set; }
-    }
-
-    public class messagePayload
-    {
-        public messagePayload()
-        {
-            ///this.variables = new object();
-            //this.extensions = new object();
-            this.data = new Data();
-            this.errors = new List<messageErrors>();
-        }
-
-        public string accessToken { get; set; }
-
-        public string operationName { get; set; }
-
-        public string key { get; set; }
-
-        public string query { get; set; }
-
-        public string language { get; set; }
-
-        public string lockdownToken { get; set; }
-
-        public BetClass variables { get; set; }
-
-        public string requestPolicy { get; set; }
-
-        public bool preferGetMethod { get; set; }
-
-        public bool suspense { get; set; }
-
-        public context context { get; set; }
-
-        public Data data { get; set; }
-
-        public List<messageErrors> errors { get; set; }
-    }
-
-
-}
-
 namespace Connectors.Stake
 {
-
-    public class ClientSettings : ConnectorSettings
+    public class StakeConnector : ConnectorClientManagerBase, ISiteConnector
     {
-
-
-
-        public string ApiEndPoint { get; set; }
-
-        public string WebSocketEndPoint { get; set; }
-
-        public string GraphQLEndPoint { get; set; }
-
-        public string SiteFormat { get; set; } = "https://{0}";
-
-        public string EndpointFormat { get; set; } = "https://{0}";
-
-
-        public override void Update(string site = "", string apiKey = "")
-        {
-
-            if (!string.IsNullOrEmpty(site))
-            {
-                //this.Site = site;
-                //this.Referrer = $"https://api.{site}";
-                //this.ApiEndPoint = $"https://api.{site}";
-                //this.WebSocketEndPoint = $"wss://api.{site}/graphql";
-                //this.GraphQLEndPoint = $"https://api.{site}/graphql";
-
-                this.Site = site;
-                this.Referrer = $"https://{site}";
-                this.ApiEndPoint = $"https://{site}/_api";
-                this.WebSocketEndPoint = $"wss://{site}/_api/graphql";
-                this.GraphQLEndPoint = $"https://{site}/_api/graphql";
-
-                /*
-                this.Site = site;
-                this.Referrer = string.Format(SiteFormat, site);
-                this.ApiEndPoint = string.Format(EndpointFormat, site); //$"https://{site}/_api";
-                this.WebSocketEndPoint = string.Format(EndpointFormat, site); //$"wss://{site}/_api/graphql";
-                this.GraphQLEndPoint = string.Format(EndpointFormat, site); //$"https://{site}/_api/graphql";
-                */
-            }
-
-            if (!string.IsNullOrEmpty(apiKey))
-            {
-                this.ApiKey = apiKey;
-            }
-
-        }
-
-
-
-        public ClientSettings() : base()
-        {
-        }
-
-
-
-    }
-
-    //public class ModernHttpClientFactory : DefaultHttpClientFactory
-    //{
-    //    #region Methods
-
-    //    /// <summary>
-    //    /// Create the message handler.
-    //    /// </summary>
-    //    /// <param name="client">The REST client that wants to create the HTTP client</param>
-    //    /// <param name="request">The REST request for which the HTTP client is created</param>
-    //    /// <returns>
-    //    /// A new HttpMessageHandler object
-    //    /// </returns>
-    //    protected override HttpMessageHandler CreateMessageHandler(IRestClient client, IRestRequest request)
-    //    {
-    //        var proxy = GetProxy(client);
-    //        var cookies = GetCookies(client, request);
-    //        var credentials = client.Credentials;
-    //        var httpClientHandler = new NativeMessageHandler();
-
-    //        if (httpClientHandler.SupportsProxy && proxy != null)
-    //        {
-    //            httpClientHandler.UseProxy = true;
-    //            httpClientHandler.Proxy = new RequestProxyWrapper(proxy);
-    //        }
-
-    //        if (cookies != null)
-    //        {
-    //            httpClientHandler.UseCookies = true;
-    //            httpClientHandler.CookieContainer = cookies;
-    //        }
-
-    //        if (credentials != null)
-    //        {
-    //            httpClientHandler.Credentials = credentials;
-    //        }
-
-    //        return httpClientHandler;
-    //    }
-
-    //    #endregion
-    //}
-
-    public class APIClientManager
-    {
-
-        //HttpClient _HttpClient;
-        //HttpClientHandler _HttpClientHandler;
-
-        public ClientSettings Settings { get; private set; }
 
         public RestClient SharedRestClient { get; private set; }
 
-        public string GraphqlEndpoint { get; private set; }
-        public string ApiEndpoint { get; set; }
-
-        public string HostEndpoint { get; set; }
-
-        public string URL { get; set; }
-        public string Domain { get; set; }
-        public string ApiKey { get; set; }
-
-
-        public CookieContainer Cookies { get; private set; }
-
-        public string UserAgent { get; private set; } = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36";
-
-
-        public APIClientManager()
+        public StakeConnector()
         {
             UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34";
         }
 
-
-        public APIClientManager(string site, string apikey) : this()
+        public StakeConnector(string site, string apikey) : this()
         {
             Domain = site;
             ApiKey = apikey;
@@ -487,36 +30,31 @@ namespace Connectors.Stake
             GraphqlEndpoint = $"https://{Domain}/_api/graphql";
         }
 
-        public APIClientManager(ClientSettings settings) : this()
+        public StakeConnector(ClientSettings settings) : this()
         {
             Domain = settings.Site;
             ApiKey = settings.ApiKey;
             HostEndpoint = $"https://{Domain}";
             ApiEndpoint = $"https://{Domain}/_api";
             GraphqlEndpoint = $"https://{Domain}/_api/graphql";
-
             Settings = settings;
-
-
         }
 
-        /*
-        public static void AddCloudflareHeaders(this System.Web.HttpRequest request, Uri refererUri)
+        public override void UpdateSharedRestClient()
         {
-            request.AddHeader(HttpHeader.Referer, refererUri.AbsoluteUri);
-            request.AddHeader("Upgrade-Insecure-Requests", "1");
+            base.UpdateSharedRestClient();
 
-            if (!request.ContainsHeader(HttpHeader.AcceptLanguage))
-                request.AddHeader(HttpHeader.AcceptLanguage, DefaultAcceptLanguage);
-        }
-    */
+            if (Settings.PersistentCookies != null)
+            {
+                foreach (var cookie in Settings.PersistentCookies)
+                {
+                    this.Cookies.Add(cookie);
+                }
+            }
 
+            SharedRestClient.CookieContainer = this.Cookies;
+            SharedRestClient.UserAgent = Settings.UserAgent ?? UserAgent;
 
-        public string RandomString(int length)
-        {
-            Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         private void CreateOrUseDefaultRestClient(bool dispose = false)
@@ -535,23 +73,7 @@ namespace Connectors.Stake
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-
-            //this.Cookies = PersistentCookies ?? new CookieContainer();
-
             this.Cookies = new CookieContainer();
-
-            //var testCookie = new Cookie()
-            //{
-            //    Name = "cf_clearance",
-            //    Value = "bghfMzhE.eXbtX.YfJbUh9Qvp8fSb7iJ5R3vIERtCuo-1665171559-0-150",
-            //    Domain = ".stake.com",
-            //    Path = "/",
-            //    Expired = false,
-            //    Secure = true,
-            //    Expires = DateTime.Parse("2023-10-07T20:39:19.353Z"),
-            //    HttpOnly = false
-            //};
-            //this.Cookies.Add(testCookie);
 
             if (Settings.PersistentCookies != null)
             {
@@ -917,39 +439,93 @@ namespace Connectors.Stake
             }
         }
 
-        public async Task<ResponseBaseAs<TResult>> Authorize<TResult>(RequestPayload payload)
+        public TResult AuthorizeSync<TResult>(RequestPayload payload)
         {
-            try
-            {
+            //try
+            // {
 
-                CreateOrUseDefaultRestClient(true);
+            CreateOrUseDefaultRestClient(true);
 
-                var request = CreateDefaultRestRequest(ApiKey, true);
+            var request = CreateDefaultRestRequest(ApiKey, true);
 
-                request.AddJsonBody(payload);
+            request.AddJsonBody(payload);
 
-                var restResponse = SharedRestClient.ExecuteAsync(request).Result;
+            var restResponse = SharedRestClient.ExecuteAsync(request).Result;
 
-                if (restResponse.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    return new ResponseAs<TResult>(default(TResult))
-                    {
-                        HttpStatus = HttpStatusCode.Forbidden
-                    };
-                }
+            restResponse.ThowIfRequireCloudflare();
 
-                return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content))
-                {
-                    HttpStatus = HttpStatusCode.OK
-                };
+            var r = JsonConvert.DeserializeObject<TResult>(restResponse.Content);
 
-            }
-            catch (Exception ex)
-            {
-                return new ErrorAs<TResult>(ex);
-            }
+            return r;
+
+            //return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content))
+            //{
+            //    HttpStatus = HttpStatusCode.OK
+            //};
+
+            //if (restResponse.StatusCode == HttpStatusCode.Forbidden)
+            //{
+            //    return new ResponseAs<TResult>(default(TResult))
+            //    {
+            //        HttpStatus = HttpStatusCode.Forbidden
+            //    };
+            //}
+
+            //return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content))
+            //{
+            //    HttpStatus = HttpStatusCode.OK
+            //};
+
+            // }
+            // catch (CloudflareRequiredException ex)
+            // {
+            //     return new ErrorAs<TResult>(ex);
+            // }
+            //  catch (Exception ex)
+            //  {
+            //      return new ErrorAs<TResult>(ex);
+            //  }
 
         }
+
+
+        //public ResponseBaseAs<TResult> AuthorizeSync<TResult>(RequestPayload payload)
+        //{
+        //    try
+        //    {
+
+        //        CreateOrUseDefaultRestClient(true);
+
+        //        var request = CreateDefaultRestRequest(ApiKey, true);
+
+        //        request.AddJsonBody(payload);
+
+        //        var restResponse = SharedRestClient.ExecuteAsync(request).Result;
+
+        //        if (restResponse.StatusCode == HttpStatusCode.Forbidden)
+        //        {
+        //            return new ResponseAs<TResult>(default(TResult))
+        //            {
+        //                HttpStatus = HttpStatusCode.Forbidden
+        //            };
+        //        }
+
+        //        return new ResponseAs<TResult>(JsonConvert.DeserializeObject<TResult>(restResponse.Content))
+        //        {
+        //            HttpStatus = HttpStatusCode.OK
+        //        };
+
+        //    }
+        //    catch (CloudflareRequiredException ex)
+        //    {
+        //        return new ErrorAs<TResult>(ex);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new ErrorAs<TResult>(ex);
+        //    }
+
+        //}
 
         public async Task<ResponseBaseAs<TResult>> Execute<TResult>(RequestPayload payload)
         {

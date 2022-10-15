@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DiceBot.Core;
+using DiceBot.Core.Connectors;
+
 namespace DiceBot.Schema.BetKing
 {
 
@@ -317,7 +319,7 @@ namespace DiceBot
                         Path = "/",//item.Path,
                         Expired = false,
                         Secure = item.Secure,
-                        Expires = item.Expires?? DateTime.Now.AddYears(1),
+                        Expires = item.Expires ?? DateTime.Now.AddYears(1),
                         HttpOnly = item.HttpOnly
                     };
                     ConnectorSettings.AddCookie(cookie);
@@ -391,7 +393,7 @@ namespace DiceBot
                 foreach (Cookie x in ConnectorSettings.GetCookieContainer().GetCookies(new Uri(ConnectorSettings.Site)))
                 {
                     if (x.Name == "csrf_token")
-                    {                        
+                    {
                         requireAuthorization = false;
                     }
                 }

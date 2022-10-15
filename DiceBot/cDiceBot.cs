@@ -24,8 +24,6 @@ using System.Windows.Forms.DataVisualization.Charting;
 using FastColoredTextBoxNS;
 using DiceBot.Core;
 
-using AutoUpdaterDotNET;
-
 namespace DiceBot
 {
 
@@ -96,7 +94,7 @@ namespace DiceBot
                 string windows = Environment.OSVersion.VersionString;
                 bool is64 = Environment.Is64BitOperatingSystem;
 
-                string agent = $"DiceBot/{ AppHelpers.AppVersion} (+http://bot.seuntjie.com)";
+                string agent = $"DiceBot/{AppHelpers.AppVersion} (+http://bot.seuntjie.com)";
                 return agent;
             }
         }
@@ -296,16 +294,24 @@ namespace DiceBot
                     Stop("Bet result received does not match last bet placed! Stopping for your safety.");
                     //updateStatus("Bet result received does not match last bet placed!");
                 }
+
                 if (!Last10Guids.Contains(bet.Guid))
+                {
                     Last10Guids.Enqueue(bet.Guid);
+                }
                 while (Last10Guids.Count > 10)
+                {
                     Last10Guids.Dequeue();
+                }
 
                 if (LogLevel > 2)
+                {
                     using (StreamWriter sw = File.AppendText("log.txt"))
                     {
                         sw.WriteLine(json.JsonSerializer<Bet>(bet));
                     }
+                }
+
             }
             catch (Exception e)
             {
@@ -1308,9 +1314,9 @@ end";
             programmerModeControl1.pnlControlProgrammer.SendToBack();
             programmerModeControl1.pnlLoadProgrammer.SendToBack();
 
-            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
+            //AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             //AutoUpdater.Start("https://rbsoft.org/updates/AutoUpdaterTest.xml");
-            AutoUpdater.Start("https://github.com/WinMachine777/Dicebot/blob/prod/version.xml");
+            //AutoUpdater.Start("https://github.com/WinMachine777/Dicebot/blob/prod/version.xml");
         }
         private void AutoUpdater_ApplicationExitEvent()
         {
@@ -5457,7 +5463,9 @@ end";
                                     dataGridView1.Rows[0].Cells[5].Style.BackColor = Color.LightGray;
                                 }
                                 else
+                                {
                                     dataGridView1.Rows[0].Cells[5].Style.BackColor = Color.Pink;
+                                }
                             }
 
                             dataGridView1.Rows[0].DefaultCellStyle.BackColor = Color.Pink;
@@ -5479,6 +5487,7 @@ end";
                             }
 
                             dataGridView1.Rows[0].DefaultCellStyle.BackColor = Color.LightGreen;
+
                             if (_Bet.Profit < 0)
                             {
 

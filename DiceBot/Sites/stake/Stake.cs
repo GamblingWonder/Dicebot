@@ -17,6 +17,7 @@ using static DiceBot.PrimediceSchema;
 using Newtonsoft.Json;
 using Connectors.Stake;
 using Connectors.Stake.Response;
+using DiceBot.Core.Connectors;
 
 namespace DiceBot.Schema.Stake
 {
@@ -30,7 +31,6 @@ namespace DiceBot
     public class Stake : DiceSite, IDiceSite
     {
 
-        protected ClientSettings clientSettings;
 
         protected string URL = "https://api.primedice.com/graphql";
         protected string RolName = "primediceRoll";
@@ -71,9 +71,17 @@ namespace DiceBot
         long uid = 0;
         DateTime lastupdate = new DateTime();
 
-        APIClientManager APIConnector;
+
+        protected ClientSettings clientSettings;
+
+        StakeConnector APIConnector;
 
         bool getid = false;
+        string userid = "";
+        int retrycount = 0;
+        DateTime Lastbet = DateTime.Now;
+        DBRandom R = new DBRandom();
+
 
         public Stake(cDiceBot Parent)
         {
@@ -130,10 +138,6 @@ namespace DiceBot
         }
 
 
-        string userid = "";
-        int retrycount = 0;
-        DateTime Lastbet = DateTime.Now;
-        DBRandom R = new DBRandom();
 
         protected override void CurrencyChanged()
         {
@@ -279,7 +283,7 @@ namespace DiceBot
 
                 clientSettings.Update(clientSettings.Site, Password);
 
-                APIConnector = APIConnector ?? new APIClientManager(clientSettings);
+                APIConnector = APIConnector ?? new StakeConnector(clientSettings);
 
                 var req = new RequestPayload()
                 {
@@ -287,61 +291,56 @@ namespace DiceBot
                     query = "query DiceBotLogin{user {activeServerSeed { seedHash seed nonce} activeClientSeed{seed} id balances{available{currency amount}} statistic {game bets wins losses betAmount profit currency}}}"
                 };
 
-                var auth = APIConnector.Authorize<PDStake.GenericResponse>(req).Result;
+                var response = APIConnector.AuthorizeSync<PDStake.GenericResponse>(req);
 
-                if (auth.HttpStatus == HttpStatusCode.Forbidden)
+                //var res = auth.Result;
+                var res = response;
+
+                userid = res.Data.User.id;
+
+                if (string.IsNullOrWhiteSpace(userid))
                 {
-                    InitAuthorizeProcess(APIConnector.ApiEndpoint);
-                    return;
+                    finishedlogin(false);
                 }
                 else
                 {
 
-                    var res = auth.Result;
-
-                    userid = res.Data.User.id;
-
-                    if (string.IsNullOrWhiteSpace(userid))
+                    foreach (Statistic x in res.Data.User.Statistics)
                     {
-                        finishedlogin(false);
+                        if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
+                        {
+                            this.bets = (int)x.bets;
+                            this.wins = (int)x.wins;
+                            this.losses = (int)x.losses;
+                            this.profit = x.profit.HasValue ? (decimal)x.profit.Value : 0;
+                            this.wagered = (decimal)x.betAmount;
+                            break;
+                        }
                     }
-                    else
+
+                    foreach (PrimediceSchema.Balance x in res.Data.User.Balances)
                     {
-
-                        foreach (Statistic x in res.Data.User.Statistics)
+                        if (x.available.currency.ToLower() == Currency.ToLower())
                         {
-                            if (x.currency.ToLower() == Currency.ToLower() && x.game == StatGameName)
-                            {
-                                this.bets = (int)x.bets;
-                                this.wins = (int)x.wins;
-                                this.losses = (int)x.losses;
-                                this.profit = x.profit.HasValue ? (decimal)x.profit.Value : 0;
-                                this.wagered = (decimal)x.betAmount;
-                                break;
-                            }
+                            balance = (decimal)x.available.amount;
+                            break;
                         }
-
-                        foreach (PrimediceSchema.Balance x in res.Data.User.Balances)
-                        {
-                            if (x.available.currency.ToLower() == Currency.ToLower())
-                            {
-                                balance = (decimal)x.available.amount;
-                                break;
-                            }
-                        }
-
-                        finishedlogin(true);
-                        ispd = true;
-
-                        Thread t = new Thread(GetBalanceThread);
-                        t.Start();
-
-                        return;
-
                     }
+
+                    finishedlogin(true);
+                    ispd = true;
+
+                    Thread t = new Thread(GetBalanceThread);
+                    t.Start();
+
+                    return;
 
                 }
 
+            }
+            catch (CloudflareRequiredException ex)
+            {
+                InitAuthorizeProcess(clientSettings.ApiEndPoint);
             }
             catch (WebException e)
             {

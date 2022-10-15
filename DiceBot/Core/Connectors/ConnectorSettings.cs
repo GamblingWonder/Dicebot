@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 
-namespace DiceBot.Core
+namespace DiceBot.Core.Connectors
 {
 
     public class ConnectorLoginData
