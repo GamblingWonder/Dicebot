@@ -3,5 +3,5 @@
 	<version>4.2.7.0</version>
 	<url>https://github.com/GamblingWonder/Dicebot/releases/download/4.2.7.0/DiceBot.4.2.7.0.zip</url>
 	<changelog>https://github.com/GamblingWonder/Dicebot/releases/tag/4.2.7.0</changelog>
-	<mandatory>false</mandatory>
+	<mandatory>true</mandatory>
 </item>
