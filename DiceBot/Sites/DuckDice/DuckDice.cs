@@ -59,7 +59,8 @@ namespace DiceBot
             "RVN",
             "AVAX",
             "ZEN",
-            "FTM"
+            "FTM",
+            "DECOY"
         };
 
 
