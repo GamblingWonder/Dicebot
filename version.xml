@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
-	<version>4.2.10.8</version>
-	<url>https://github.com/GamblingWonder/Dicebot/releases/download/4.2.10.8/DiceBot.4.2.10.8.zip</url>
-	<changelog>https://github.com/GamblingWonder/Dicebot/releases/tag/4.2.10.8</changelog>
+	<version>4.2.10.11</version>
+	<url>https://github.com/GamblingWonder/Dicebot/releases/download/4.2.10.11/DiceBot.4.2.10.11.zip</url>
+	<changelog>https://github.com/GamblingWonder/Dicebot/releases/tag/4.2.10.11</changelog>
 	<mandatory>true</mandatory>
 </item>
