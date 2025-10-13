@@ -3,5 +3,5 @@
 	<version>4.2.15.116</version>
 	<url>https://github.com/GamblingWonder/Dicebot/releases/download/4.2.15.116/DiceBot.4.2.15.116.zip</url>
 	<changelog>https://github.com/GamblingWonder/Dicebot/releases/tag/4.2.15.116</changelog>
-	<mandatory>true</mandatory>
+	<mandatory>false</mandatory>
 </item>
